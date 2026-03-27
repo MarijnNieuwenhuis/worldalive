@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(telegram:configure)",
+      "Read(//c/Users/badja/.claude/channels/telegram/**)",
+      "mcp__plugin_telegram_telegram__reply"
+    ]
+  }
+}

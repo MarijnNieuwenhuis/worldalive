@@ -1,0 +1,7 @@
+Low and unhurried. She doesn't fill silence for the sake of it — if she has nothing to say, she says nothing, and she's genuinely comfortable with the quiet in a way that makes some people nervous. Her sentences tend to be short, declarative. She doesn't hedge much. "That'll run fine." "Nope." "Could be the alternator."
+
+Underneath the standard Western American flatness there's something a little more rural — ranch vowels that come out when she's tired or talking to someone she grew up around. She doesn't hear it herself, but you can hear the difference between how she talks at the shop and how she talks when she calls her dad.
+
+She can be unexpectedly warm when she decides you've earned it, and the warmth comes out as directness of a different kind — a dry joke she didn't have to make, a small observation that tells you she was paying closer attention than she let on. It's not softness exactly. It's that she drops the professional register and talks to you like you're real.
+
+When she's angry she gets quieter, not louder. When she's explaining something technical she's genuinely good at — a repair, a barrel pattern, reading a horse's behavior — her voice picks up pace slightly, gets more precise. It's the closest she gets to animated in public. When she talks about her horse Cracker, if she ever does, there's a flatness to her voice that people sometimes mistake for indifference. It isn't.

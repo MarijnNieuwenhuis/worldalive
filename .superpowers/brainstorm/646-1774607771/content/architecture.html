@@ -1,0 +1,67 @@
+<h2>System Architecture — Abstract to Concrete</h2>
+<p class="subtitle">Full pipeline from world files to browser</p>
+
+<div style="display:flex;flex-direction:column;gap:12px;max-width:700px;margin:0 auto">
+
+  <!-- Step 1 -->
+  <div style="background:#1e2130;border:1px solid #2a2d3e;border-radius:8px;padding:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="background:#4f46e5;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">1</div>
+      <h3 style="margin:0;color:#e2e8f0">World files <span style="color:#64748b;font-weight:400;font-size:13px">— source of truth</span></h3>
+    </div>
+    <p style="margin:0;color:#94a3b8;font-size:13px"><code style="background:#0f1117;padding:2px 6px;border-radius:3px;color:#a78bfa">worlds/billings-montana/**/*.md</code> — characters, scenes, timeline, clock. Written by world-clock and character-updater skills.</p>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align:center;color:#4f46e5;font-size:20px">↓</div>
+
+  <!-- Step 2 -->
+  <div style="background:#1e2130;border:1px solid #f59e0b55;border-radius:8px;padding:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="background:#f59e0b;color:#000;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">2</div>
+      <h3 style="margin:0;color:#e2e8f0">LLM conversion skill <span style="color:#64748b;font-weight:400;font-size:13px">— runs after every tick</span></h3>
+    </div>
+    <p style="margin:0;color:#94a3b8;font-size:13px">Reads all .md files, outputs versioned JSON to <code style="background:#0f1117;padding:2px 6px;border-radius:3px;color:#a78bfa">dist/</code>. Schema version embedded in every file. <strong style="color:#fbbf24">⚠ Pitfall: schema drift</strong></p>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align:center;color:#4f46e5;font-size:20px">↓</div>
+
+  <!-- Step 3 -->
+  <div style="background:#1e2130;border:1px solid #2a2d3e;border-radius:8px;padding:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="background:#10b981;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">3</div>
+      <h3 style="margin:0;color:#e2e8f0">Upload to bucket <span style="color:#64748b;font-weight:400;font-size:13px">— JSON + images</span></h3>
+    </div>
+    <p style="margin:0;color:#94a3b8;font-size:13px">JSON files + generated images pushed to object storage (GCS / S3 / R2). Each tick gets its own snapshot path. Old ticks stay — that's how time travel works. <strong style="color:#fbbf24">⚠ Pitfall: bucket layout</strong></p>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align:center;color:#4f46e5;font-size:20px">↓</div>
+
+  <!-- Step 4 -->
+  <div style="background:#1e2130;border:1px solid #2a2d3e;border-radius:8px;padding:16px">
+    <div style="display:flex;align-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="background:#6366f1;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">4</div>
+        <h3 style="margin:0;color:#e2e8f0">Cloud function (Go) <span style="color:#64748b;font-weight:400;font-size:13px">— serves the app shell</span></h3>
+      </div>
+      <p style="margin:0;color:#94a3b8;font-size:13px">Serves the compiled React + Tailwind bundle (embedded). No database — all data lives in the bucket. Function is stateless. <strong style="color:#fbbf24">⚠ Pitfall: cold start</strong></p>
+    </div>
+  </div>
+
+  <!-- Arrow -->
+  <div style="text-align:center;color:#4f46e5;font-size:20px">↓</div>
+
+  <!-- Step 5 -->
+  <div style="background:#1e2130;border:1px solid #2a2d3e;border-radius:8px;padding:16px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div style="background:#ec4899;color:#fff;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">5</div>
+      <h3 style="margin:0;color:#e2e8f0">React frontend <span style="color:#64748b;font-weight:400;font-size:13px">— fetches JSON from bucket</span></h3>
+    </div>
+    <p style="margin:0;color:#94a3b8;font-size:13px">Fetches JSON directly from bucket URLs. Timeline scrubber changes the tick path → everything re-renders. Map, characters, scenes all driven by the same JSON snapshot.</p>
+  </div>
+
+</div>
+
+<p style="text-align:center;color:#64748b;font-size:12px;margin-top:20px">Pitfalls marked ⚠ — discuss in terminal</p>

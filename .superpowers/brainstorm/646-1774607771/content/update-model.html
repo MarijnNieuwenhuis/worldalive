@@ -1,0 +1,26 @@
+<h2>How does the site stay in sync with the world?</h2>
+<p class="subtitle">When world-clock advances and new .md files are written, how does the site pick it up?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Live server — reads files on demand</h3>
+      <p>Go app runs continuously, reads .md files when you request a page. Always fresh. No build step. Slightly slower per request but zero maintenance.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Build step — .md → JSON on clock advance</h3>
+      <p>After each world-clock tick, run a converter that writes JSON files. Go app serves those static files. Fast, portable, easy to deploy anywhere.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Watcher — auto-rebuilds when files change</h3>
+      <p>Go app watches the worlds/ directory. When any .md changes, it rebuilds the JSON automatically. Best of both — live feel, static serving speed.</p>
+    </div>
+  </div>
+</div>

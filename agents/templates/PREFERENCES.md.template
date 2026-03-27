@@ -1,0 +1,18 @@
+# {{AGENT_NAME}} — Preferences
+
+## MCP Tools
+
+| Tool | Purpose |
+|------|---------|
+| (list tools this agent may use) | |
+
+## Configuration
+
+- Working folder: ~/agents/{{AGENT_FOLDER}}/
+- Output format: (markdown / json / notification)
+- Notification channel: (slack / telegram / none)
+
+## Limits
+
+- Max memory file size before compaction: 50KB
+- Max items to process per run: (set per agent)

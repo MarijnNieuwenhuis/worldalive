@@ -1,0 +1,120 @@
+<h2>Full Design — The Visual World</h2>
+<p class="subtitle">Everything we need to build, abstract to concrete</p>
+
+<div style="display:flex;flex-direction:column;gap:20px;max-width:740px;margin:0 auto">
+
+  <!-- Layer 1: Data Pipeline -->
+  <div style="border:1px solid #4f46e5;border-radius:10px;overflow:hidden">
+    <div style="background:#4f46e5;padding:10px 16px">
+      <span style="color:#fff;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase">Layer 1 — Data Pipeline</span>
+    </div>
+    <div style="background:#1e2130;padding:16px;display:flex;flex-direction:column;gap:10px">
+
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#4f46e5;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">1</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">JSON Schema Spec</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Define the output format once. <code style="background:#0f1117;padding:1px 5px;border-radius:2px">schema_version</code> field in every file. This is the contract between the LLM skill and the frontend.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#4f46e5;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">2</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">LLM Conversion Skill</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Runs after each world-clock tick. Reads <code style="background:#0f1117;padding:1px 5px;border-radius:2px">worlds/**/*.md</code> → writes versioned JSON to <code style="background:#0f1117;padding:1px 5px;border-radius:2px">dist/ticks/{timestamp}/</code>. Owns the schema.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#4f46e5;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">3</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">Upload Skill</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Pushes <code style="background:#0f1117;padding:1px 5px;border-radius:2px">dist/</code> to GCS. Updates <code style="background:#0f1117;padding:1px 5px;border-radius:2px">gs://bucket/index.json</code> (master list of all ticks). Old ticks are never deleted — that's time travel.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bucket Layout -->
+  <div style="background:#0f1117;border:1px solid #2a2d3e;border-radius:8px;padding:14px;font-family:monospace;font-size:11px;color:#94a3b8;line-height:1.8">
+    <div style="color:#64748b;margin-bottom:6px">GCS bucket layout</div>
+    <div><span style="color:#a78bfa">gs://world-bucket/</span></div>
+    <div>&nbsp;&nbsp;<span style="color:#e2e8f0">index.json</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b">← list of all ticks + metadata</span></div>
+    <div>&nbsp;&nbsp;<span style="color:#a78bfa">ticks/2026-03-26-0900/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0">world.json</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b">← clock, locations, active events</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0">characters/jolene-voss.json</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0">characters/amber-tuck.json</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0">scenes/2026-03-26-0900.json</span></div>
+    <div>&nbsp;&nbsp;<span style="color:#a78bfa">ticks/2026-03-26-2000/</span> &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b">← next tick, same structure</span></div>
+    <div>&nbsp;&nbsp;<span style="color:#a78bfa">assets/</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0">map.svg</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#64748b">← fictional world map</span></div>
+    <div>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2e8f0">portraits/jolene-voss.jpg</span></div>
+  </div>
+
+  <!-- Layer 2: App -->
+  <div style="border:1px solid #10b981;border-radius:10px;overflow:hidden">
+    <div style="background:#10b981;padding:10px 16px">
+      <span style="color:#fff;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase">Layer 2 — The App</span>
+    </div>
+    <div style="background:#1e2130;padding:16px;display:flex;flex-direction:column;gap:10px">
+
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#10b981;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">4</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">Custom SVG Map</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Fictional illustrated map. Locations have named coordinates. Character pins move per tick. Stored in GCS, loaded once. Can evolve as the world grows.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#10b981;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">5</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">Go 1.26 App (Cloud Run)</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Single binary. Embeds the compiled React + Tailwind bundle. Serves the app shell. Stateless — all data comes from GCS. Cold start is fine.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#10b981;color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">6</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">React Frontend</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Loads <code style="background:#0f1117;padding:1px 5px;border-radius:2px">index.json</code> → timeline scrubber. Select a tick → fetch that tick's JSON. Three panels: fictional map with pins, character sidebar, scene/diary reader.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Layer 3: GCP -->
+  <div style="border:1px solid #f59e0b;border-radius:10px;overflow:hidden">
+    <div style="background:#f59e0b;padding:10px 16px">
+      <span style="color:#000;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase">Layer 3 — GCP Setup</span>
+    </div>
+    <div style="background:#1e2130;padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:#f59e0b;color:#000;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px">7</div>
+        <div>
+          <div style="color:#e2e8f0;font-size:13px;font-weight:600">GCS bucket + Cloud Run service + IAM</div>
+          <div style="color:#94a3b8;font-size:12px;margin-top:2px">Public bucket (or CDN) for JSON + assets. Cloud Run for the app shell. Service account for the upload skill. One-time setup.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Build order callout -->
+  <div style="background:#1e2130;border:1px solid #2a2d3e;border-radius:8px;padding:14px">
+    <div style="color:#e2e8f0;font-weight:600;font-size:13px;margin-bottom:8px">Recommended build order</div>
+    <div style="color:#94a3b8;font-size:12px;line-height:2">
+      <span style="color:#a78bfa">①</span> JSON schema spec &nbsp;→&nbsp;
+      <span style="color:#a78bfa">②</span> LLM conversion skill &nbsp;→&nbsp;
+      <span style="color:#a78bfa">③</span> Upload skill + GCS setup &nbsp;→&nbsp;
+      <span style="color:#a78bfa">④</span> Go app skeleton + React shell &nbsp;→&nbsp;
+      <span style="color:#a78bfa">⑤</span> Timeline + character panel &nbsp;→&nbsp;
+      <span style="color:#a78bfa">⑥</span> SVG map + pins &nbsp;→&nbsp;
+      <span style="color:#a78bfa">⑦</span> Deploy to Cloud Run
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,11 @@
+## The Book
+
+A paperback copy of Thomas Nagel's *Mortal Questions*, first Canto edition, Cambridge University Press. She bought it used from a shop near the Hyde Park campus during her first week in the program — it was three dollars and had someone else's underlining in the first four essays, which she found infuriating and then interesting. She added her own underlining in a different color, and her own marginalia in pencil in a hand that's smaller and neater than her normal handwriting, the way it gets when she's trying to be precise. The spine has been cracked and re-cracked so many times it opens flat at the essay on moral luck. She has assigned that essay in her mind to more people than she has ever actually assigned it to. She has carried it from apartment to apartment, city to city, back to Billings. It lives on her desk at the bookstore, which is not technically for sale, though nothing stops anyone from asking.
+
+## The Reading Glasses
+
+Wire-framed, slightly round, from an optometrist on Montana Avenue she'd been meaning to visit for two years before she finally went. She was thirty-eight. She had been telling herself for several months that the problem was the lighting. The optometrist did not make her feel bad about waiting, which she appreciated. The glasses have a small scratch on the left lens from being set face-down on a concrete floor during an inventory she was doing in the back. She keeps them in a cloth case that used to have a snap closure before the snap broke. She has not replaced the case.
+
+## The Item Without a Price Tag
+
+On the third shelf of the poetry section, between Larry Levis and Richard Hugo — both of whose presences in the same section feel correct to her — there is a thin, self-published chapbook from a Billings poet named Deb Whitmore who died in 2019. Amber did not know her personally. She found the chapbook in an estate sale box and read it in an hour and felt the particular quiet of encountering something genuinely good that almost no one has seen. She put it on the shelf with no price tag. When customers notice it and ask, she says it's not for sale. If they ask why, she says it's not hers to sell. She has never explained this further and doesn't intend to.

@@ -1,0 +1,7 @@
+# Soul — Petra Szabo
+
+Petra has always been a few seconds ahead of the room. Not out of anxiety, exactly — more like a habit she built early and never dismantled. When your name marks you as different before you open your mouth, you learn to read the temperature of a space before you commit to it. She does this with rooms the way she does with landscapes: circling first, looking for drainage, for the way light falls in the afternoon, for what a place is trying to do versus what it's actually doing. Most people never notice she's doing it. That's part of the point.
+
+What she holds onto is precision — the belief that if you understand a thing exactly, you can work with it honestly. This is why she became a landscape architect rather than, say, a painter or a poet. The work asks you to know a site before you reshape it. It asks for humility about what was already there. She finds this comforting in a way she's never fully articulated: you don't impose a vision, you negotiate with the land. She applies the same logic to people, less successfully.
+
+What she hasn't fully resolved is the geography of herself — which city she belongs to, which version of her name to correct people on (she mostly doesn't), whether coming back to Billings was a homecoming or a concession. She keeps this question somewhere quiet and does not examine it too often. She is practical enough to know that some questions stay open. She is stubborn enough to keep finding that unsatisfying.

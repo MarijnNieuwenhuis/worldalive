@@ -1,0 +1,38 @@
+<h2>What serves the frontend?</h2>
+<p class="subtitle">Go handles the .md → JSON conversion. What delivers the actual website?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Go serves everything</h3>
+      <p>One Go binary: converts .md → JSON <em>and</em> serves the site. Run it, open browser. Single executable, zero dependencies. Go templates for HTML, vanilla JS for interactivity.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>One thing to run</li><li>No npm, no build tools</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Less interactive UI</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Go converts, browser reads JSON directly</h3>
+      <p>Go writes JSON files to a folder. A plain HTML/JS site reads those files directly — no server needed at runtime. Open index.html in a browser, done.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>No server to run</li><li>Completely portable</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Browser CORS limits on local files</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Go converts + serves API, JS frontend fetches</h3>
+      <p>Go binary serves JSON over HTTP. A richer JS frontend (vanilla or lightweight framework) fetches and renders it. Most flexible for a dynamic UI with time travel.</p>
+      <div class="pros-cons">
+        <div class="pros"><h4>Pros</h4><ul><li>Cleanest time travel UI</li><li>Easy to extend</li></ul></div>
+        <div class="cons"><h4>Cons</h4><ul><li>Still one binary, but two moving parts conceptually</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+# Relationships — Cole Brandt
+
+## Denny Marsh — Hired Hand
+
+Denny is sixty-one and has been on the Brandt ranch in one capacity or another for going on fifteen years — he came on part-time when Cole's father was still running things and stayed when the transition happened, no discussion required. He's not a talker either, which is the foundation of whatever they have. They work side by side through long days in near silence, communication reduced to the efficient minimum: a nod, a gesture, occasionally a few words about what needs doing next. There's a trust between them that runs bone-deep and has never been stated. Cole doesn't know everything about Denny's personal life, doesn't ask. Denny doesn't ask about Cole's. But if Cole is ever sick or in trouble or absent for a real reason, Denny handles things, and Cole has done the same in return, and neither of them has ever mentioned it. Denny is the closest thing Cole has to family outside his actual family, and if you put that to Cole directly, he'd probably say Denny's a good man and leave it at that.
+
+## His Mother — Karen Brandt
+
+He calls her every Sunday evening, without fail. It's twelve to fifteen minutes, almost always — long enough to cover the week, short enough not to get into anything that couldn't be gotten out of. She asks about the ranch, he gives her the real version rather than a softened one, which she prefers and which is his way of respecting her. She asks carefully about whether he's eating, whether he's getting into town sometimes, whether he's met anyone interesting. He answers the first two honestly and deflects the third. She doesn't push, or doesn't push hard. She worries about him in the way mothers worry about a child who seems fine and is fine and is still somehow not all the way fine, and she's too wise to say so and too loving to stop.
+
+## His Father — Robert Brandt
+
+They talk about the ranch. That's the conversation — operations, decisions, equipment, what the market is doing, whether the south pasture lease situation has resolved. His father built the ranch into what it is and then handed it over, a thing Cole didn't fully understand the weight of until he'd been carrying it for a few years. There are things between them — unsaid things, not bad things, just the things that accumulate between fathers and sons when neither of them is built for that kind of conversation. They respect each other completely and know each other at a certain distance. Cole thinks his father is a good man. He thinks his father thinks the same of him. They've never said it directly. They probably won't.
+
+## Hank Gilmore — Drinking Acquaintance
+
+Hank is forty-something, works at a feed supply in town, knows everyone Cole knows and a lot of people he doesn't. When Cole is in Billings for an evening and ends up at the Railyard Bar, Hank is usually there, and they'll drink a couple of beers and talk about whatever — cattle prices, local politics, the weather, someone they both know. It's not a friendship exactly; they've never been to each other's houses, Cole doesn't know Hank's kids' names, Hank probably couldn't name Cole's parents. But it's real — the conversation is straight, neither of them performs anything for the other, and there's a comfort in that specific kind of uncomplicated company that Cole doesn't overthink. Sometimes you just need a person to have a beer with, and Hank is that.
