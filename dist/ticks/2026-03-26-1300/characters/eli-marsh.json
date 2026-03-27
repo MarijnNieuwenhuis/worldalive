@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "eli-marsh",
+  "name": "Eli Marsh",
+  "type": "generated",
+  "current_location": "downtown-coffee-shop",
+  "health_status": "healthy",
+  "soul_summary": "Eli sees things — underneath the easy smile and fast talk and the way he can make any room feel slightly more alive, he notices the specific angle of afternoon light on the Rimrocks, remembers the exact word a stranger used in a conversation two years ago, can describe the expression on a person's face in the moment they realize they've said too much with enough precision that whoever he's telling it to will say yes, that's exactly it. He collects the world's texture the way some people collect grievances. The problem — the central one, the one he circles without landing — is that he hasn't done anything with it. The notes exist, the two hundred first paragraphs exist, the folder titled 'Drafts' exists. He tells people he's a writer the way other people say they're thinking about going back to school: as a fact about his identity he has not yet chosen to test, because testing it would require finishing something, and finishing would mean finding out.",
+  "personality_summary": "Openly and readily curious about people in a way that isn't strategic — he creates the conditions where people say the real thing, warm without being soft, funny without performing, interested without interrogating. More serious than the surface suggests, he just doesn't trust himself with it yet, and the charm doubles as armor.",
+  "goals_summary": "Finish something — one piece, a scene that stays a scene, a story with an ending — and stop stopping just before finding out whether he was right about himself.",
+  "relationships": [
+    {
+      "character_id": "sandra-marsh",
+      "name": "Sandra Marsh",
+      "dynamic": "mother — steady, loving, contains a low-grade worry at its edges she tries not to show"
+    },
+    {
+      "character_id": "tom-marsh",
+      "name": "Tom Marsh",
+      "dynamic": "father — practical, kind, doesn't know what to do with Eli but loves him for the way he loves him"
+    },
+    {
+      "character_id": "marcus-okafor",
+      "name": "Marcus Okafor",
+      "dynamic": "best friend since sixteen — the one person Eli doesn't manage himself around"
+    },
+    {
+      "character_id": "priya-mehta",
+      "name": "Priya Mehta",
+      "dynamic": "someone at the gym — something forming, slowly, neither has named it"
+    }
+  ],
+  "diary_entry": ""
+}

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="800" height="800">
+  <rect width="100" height="100" fill="#1a1a2e"/>
+  <!-- Downtown -->
+  <rect x="40" y="42" width="20" height="16" rx="2" fill="#2a2d4e" stroke="#4f46e5" stroke-width="0.5"/>
+  <text x="50" y="52" text-anchor="middle" fill="#a78bfa" font-size="3" font-family="sans-serif">Downtown</text>
+  <!-- Tuck's Books -->
+  <rect x="34" y="24" width="16" height="10" rx="2" fill="#2a2d4e" stroke="#4f46e5" stroke-width="0.5"/>
+  <text x="42" y="31" text-anchor="middle" fill="#a78bfa" font-size="2.5" font-family="sans-serif">Tuck's Books</text>
+  <!-- Hospital -->
+  <rect x="60" y="18" width="16" height="12" rx="2" fill="#2a2d4e" stroke="#ef4444" stroke-width="0.5"/>
+  <text x="68" y="25" text-anchor="middle" fill="#fca5a5" font-size="2.5" font-family="sans-serif">St. Vincent</text>
+  <!-- Cole's Ranch -->
+  <rect x="13" y="66" width="14" height="10" rx="2" fill="#2a2d4e" stroke="#10b981" stroke-width="0.5"/>
+  <text x="20" y="73" text-anchor="middle" fill="#6ee7b7" font-size="2.5" font-family="sans-serif">Cole's Ranch</text>
+  <!-- CHS Refinery -->
+  <rect x="8" y="71" width="14" height="10" rx="2" fill="#2a2d4e" stroke="#f59e0b" stroke-width="0.5"/>
+  <text x="15" y="78" text-anchor="middle" fill="#fbbf24" font-size="2.5" font-family="sans-serif">CHS Refinery</text>
+  <!-- Heights Auto -->
+  <rect x="64" y="26" width="16" height="10" rx="2" fill="#2a2d4e" stroke="#4f46e5" stroke-width="0.5"/>
+  <text x="72" y="33" text-anchor="middle" fill="#a78bfa" font-size="2.5" font-family="sans-serif">Heights Auto</text>
+  <!-- Billings Senior High -->
+  <rect x="53" y="31" width="14" height="10" rx="2" fill="#2a2d4e" stroke="#4f46e5" stroke-width="0.5"/>
+  <text x="60" y="38" text-anchor="middle" fill="#a78bfa" font-size="2.5" font-family="sans-serif">Senior High</text>
+  <!-- Roads -->
+  <line x1="0" y1="50" x2="100" y2="50" stroke="#2a2d4e" stroke-width="1"/>
+  <line x1="50" y1="0" x2="50" y2="100" stroke="#2a2d4e" stroke-width="1"/>
+  <line x1="0" y1="30" x2="100" y2="30" stroke="#2a2d4e" stroke-width="0.5" stroke-dasharray="2,2"/>
+  <line x1="30" y1="0" x2="30" y2="100" stroke="#2a2d4e" stroke-width="0.5" stroke-dasharray="2,2"/>
+</svg>

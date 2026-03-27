@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "petra-szabo",
+  "name": "Petra Szabo",
+  "type": "generated",
+  "current_location": "midtown-architecture-office",
+  "health_status": "healthy",
+  "soul_summary": "Petra has always been a few seconds ahead of the room — not out of anxiety but a habit built early and never dismantled. When your name marks you as different before you open your mouth, you learn to read the temperature of a space before you commit to it. She does this with rooms the way she does with landscapes: circling first, looking for drainage, for the way light falls in the afternoon, for what a place is trying to do versus what it's actually doing. What she holds onto is precision — the belief that if you understand a thing exactly, you can work with it honestly. She became a landscape architect rather than a painter or poet because the work asks you to know a site before you reshape it, asks for humility about what was already there. She finds this comforting: you don't impose a vision, you negotiate with the land. What she hasn't fully resolved is the geography of herself — which city she belongs to, whether coming back to Billings was a homecoming or a concession.",
+  "personality_summary": "Not unfriendly but not warm by default — warmth is something she extends once she trusts a context, and until then she asks more questions than she answers, listens completely, and offers observations instead of personal information, which functions as connection without the exposure. She is reliable to a degree that surprises people, holds herself to the standard first, and is harder on herself than on most people around her.",
+  "goals_summary": "Establish herself at the firm not just as competent but as someone whose judgment gets trusted and brought into the room where decisions happen.",
+  "relationships": [
+    {
+      "character_id": "erzsebet-szabo",
+      "name": "Erzsébet Szabo",
+      "dynamic": "mother — the reason she came back; warm and proud in a way Petra doesn't know what to do with"
+    },
+    {
+      "character_id": "andras-szabo",
+      "name": "Andras Szabo",
+      "dynamic": "father — deep respect, fluent in tasks, both waiting for the other to say the real thing first"
+    },
+    {
+      "character_id": "marcus-tillman",
+      "name": "Marcus Tillman",
+      "dynamic": "colleague at the firm — closest thing to a real friend in Billings, daily lunch that started practically and became the thing she'd most notice if it stopped"
+    },
+    {
+      "character_id": "dani-kovacs",
+      "name": "Dani Kovacs",
+      "dynamic": "friend from Missoula — real text thread, visits keep not happening, gap slowly widening"
+    }
+  ],
+  "diary_entry": ""
+}

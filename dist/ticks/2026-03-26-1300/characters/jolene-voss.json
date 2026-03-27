@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "jolene-voss",
+  "name": "Jolene Voss",
+  "type": "manual",
+  "current_location": "tucks-books",
+  "health_status": "healthy",
+  "soul_summary": "Jolene's core is honesty — not as a personality trait but as a conviction she'd die on. She cannot pretend, not to others, not to herself, and she would give up comfort, relationships, and safety before she'd betray it. But she's not blunt: she cares how the truth lands, finds the right moment and the right words, tells hard things kindly because clarity is the point, not cruelty. Underneath that she doubts herself more than people realize, and the honesty is also the discipline she uses to keep herself accountable when her inner voice gets unreliable. She holds herself to the same standard she holds everyone else, maybe harder. She's still figuring out her worth — not broken, just honest enough to know she doesn't have it all sorted.",
+  "personality_summary": "In a room full of strangers, Jolene gravitates toward one person and has a real conversation rather than working the room — she has no interest in performing sociability and would rather actually connect than collect interactions. She's perceptive in a way that unnerves people slightly, remembering odd details weeks later and bringing them up as though it were obvious she'd been holding onto them.",
+  "goals_summary": "She wants to prove herself — at something, to someone, maybe mostly to herself — and to find her people, the place or group where she fully fits.",
+  "relationships": [
+    {
+      "character_id": "amber-tuck",
+      "name": "Amber Tuck",
+      "dynamic": "recent acquaintance — first encounter on 2026-03-26"
+    },
+    {
+      "character_id": "arleen",
+      "name": "Arleen",
+      "dynamic": "deceased closest friend — grief quiet and unresolved, still wears Arleen's necklace"
+    }
+  ],
+  "diary_entry": "I was walking back with my sandwich and the whole block was a mess — orange cones, a city crew, water shooting up through the asphalt like something out of a cartoon. I had to cross the street and I just... wandered into the bookstore. I don't know why. There was a woman behind the counter eating her lunch alone, completely unbothered by the chaos outside, and something about that made me want to talk to her. She knew the block, knew the pipes — said this happens every winter. I bought a novel I'd meant to read for months. The whole thing took maybe ten minutes. I walked back to the office thinking about it longer than made sense."
+}

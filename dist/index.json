@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "last_modified": "2026-03-27T00:00:00Z",
+  "ticks": [
+    {
+      "timestamp": "2026-03-26-0900",
+      "label": "Thursday, March 26 · 09:00",
+      "summary": "Thursday morning workday begins — characters disperse to their respective workplaces and homes, no significant intersections.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": []
+    },
+    {
+      "timestamp": "2026-03-26-1300",
+      "label": "Thursday, March 26 · 13:00",
+      "summary": "A water main break on 1st Ave N detours Jolene into Tuck's Books, where she meets Amber for the first time in an easy ten-minute exchange that stays with her longer than makes sense.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["jolene-voss", "amber-tuck"]
+    },
+    {
+      "timestamp": "2026-03-26-1700",
+      "label": "Thursday, March 26 · 17:00",
+      "summary": "Evening shift rotation begins — Cassidy opens The Rail, Marcus heads to the refinery — and Eli and Travis cross paths briefly downtown in their first acknowledged encounter.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["eli-marsh", "travis-kimura"]
+    },
+    {
+      "timestamp": "2026-03-26-2000",
+      "label": "Thursday, March 26 · 20:00",
+      "summary": "The city settles into its Thursday night rhythm — Cassidy works the bar, Marcus is deep in his shift at the refinery, Jolene reads the novel she bought today, Travis ties flies at the kitchen table.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": []
+    }
+  ]
+}

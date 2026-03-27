@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-03-26-1300",
+  "clock": "Thursday, March 26, 2026 at 13:00",
+  "locations": [
+    {"id": "home", "name": "Home", "x": 50, "y": 50},
+    {"id": "tucks-books", "name": "Tuck's Books", "x": 42, "y": 28},
+    {"id": "the-rail-bar", "name": "The Rail Bar", "x": 48, "y": 45},
+    {"id": "downtown-coffee-shop", "name": "Downtown Coffee Shop", "x": 52, "y": 42},
+    {"id": "downtown", "name": "Downtown", "x": 50, "y": 44},
+    {"id": "downtown-apartment", "name": "Downtown Apartment", "x": 49, "y": 43},
+    {"id": "coles-ranch", "name": "Cole's Ranch", "x": 20, "y": 70},
+    {"id": "heights-auto-repair", "name": "Heights Auto & Repair", "x": 72, "y": 30},
+    {"id": "midtown-architecture-office", "name": "Landscape Architecture Office", "x": 45, "y": 55},
+    {"id": "billings-senior-high", "name": "Billings Senior High", "x": 60, "y": 35},
+    {"id": "midtown-outfitter-shop", "name": "Midtown Outfitter Shop", "x": 43, "y": 52},
+    {"id": "west-end-residential-site", "name": "West End Residential Site", "x": 25, "y": 55},
+    {"id": "chs-refinery", "name": "CHS Refinery", "x": 15, "y": 75},
+    {"id": "the-heights-apartment", "name": "The Heights Apartment", "x": 70, "y": 28},
+    {"id": "st-vincent-hospital", "name": "St. Vincent Hospital", "x": 68, "y": 24}
+  ],
+  "events": ["Water main break on 1st Ave N Downtown — block closed, foot traffic rerouted, several businesses lose water pressure"]
+}
