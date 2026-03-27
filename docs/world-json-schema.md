@@ -49,6 +49,7 @@ Root file. Rebuilt after every tick.
 ```
 
 `x`, `y`: 0–100, percentage of map canvas. Never changes for a given location.
+`events`: lists world-level events (things that happened in the world this tick). Distinct from `events` in `scenes/*.json`, which lists scene-specific events (plot points within that scene).
 
 ---
 
@@ -76,12 +77,17 @@ Root file. Rebuilt after every tick.
 }
 ```
 
+`type`: one of `manual` (user-crafted, requires approval for changes) or `generated` (AI-generated, auto-updated). Promoted generated characters keep the `generated` type.
 `health_status`: one of `healthy`, `injured`, `hospitalized`, `deceased`, `absent`.
 `current_location`: must match a location `id` in `world.json`.
+`conflicts`: defaults to `[]` (never omitted, never null).
+`diary_entry`: defaults to `""` for characters without diary entries (never omitted).
 
 ---
 
 ## dist/ticks/{timestamp}/scenes/{timestamp}.json
+
+Exactly ONE scene file exists per tick. Path is `dist/ticks/{timestamp}/scenes/{timestamp}.json` — the timestamp is identical to the parent folder's timestamp.
 
 ```json
 {
@@ -94,11 +100,14 @@ Root file. Rebuilt after every tick.
 }
 ```
 
+`location`: must match a location `id` in `world.json`.
+`events`: lists scene-specific events (plot points within that scene). Distinct from `events` in `world.json`, which lists world-level events (things that happened in the world this tick).
+
 ---
 
 ## dist/pending-events.json
 
-Written by the React UI via `POST /events`. Read and updated by the validate-events skill.
+Written by the React UI via `POST /events`. Read and updated by the validate-events skill. Holds ONE pending submission at a time. It is overwritten on each new submission.
 
 ```json
 {
@@ -117,6 +126,9 @@ Written by the React UI via `POST /events`. Read and updated by the validate-eve
 }
 ```
 
+`target_time`: the single target time for all events in this submission. One submission = one `target_time`, one `events` array.
+`events[].id`: unique identifier within the submission. Format `evt-{unix-timestamp}` is recommended.
+`events[].location`: must match a location `id` in `world.json`, same constraint as `current_location` in character files.
 `status`: `pending` (just written) → `validated` (no hard blocks) → `blocked` (has hard blocks).
 
 Conflict entry format:
