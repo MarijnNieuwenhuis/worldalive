@@ -3,7 +3,12 @@
     "allow": [
       "Skill(telegram:configure)",
       "Read(//c/Users/badja/.claude/channels/telegram/**)",
-      "mcp__plugin_telegram_telegram__reply"
+      "mcp__plugin_telegram_telegram__reply",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)"
     ]
   }
 }

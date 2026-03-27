@@ -1,27 +1,42 @@
 export default function ScenePanel({ scene }) {
   if (!scene) return (
-    <div className="h-48 border-t border-gray-800 p-4 text-xs text-gray-600 flex items-center justify-center">
-      No scene for this tick
+    <div className="flex flex-col items-center justify-center gap-2 py-6">
+      <span className="font-mono text-xs" style={{ color: '#64748b' }}>No scene data available</span>
     </div>
   )
 
   return (
-    <div className="h-48 border-t border-gray-800 flex flex-col overflow-hidden">
-      <div className="px-4 py-2 border-b border-gray-800/50 text-[10px] text-gray-500 uppercase tracking-wide shrink-0">
-        Scene
+    <div className="space-y-4">
+      {/* Narrative */}
+      <div style={{ borderLeft: '3px solid rgba(249,115,22,0.4)', paddingLeft: 14 }}>
+        <p className="text-[11px] leading-[1.7]" style={{ color: '#94a3b8' }}>
+          {scene.narrative}
+        </p>
       </div>
-      <div className="flex-1 overflow-y-auto px-4 py-3">
-        <p className="text-xs text-gray-300 leading-relaxed">{scene.narrative}</p>
-        {scene.events?.length > 0 && (
-          <ul className="mt-3 space-y-1">
+
+      {/* Events */}
+      {scene.events?.length > 0 && (
+        <div>
+          <span
+            className="font-mono text-[10px] uppercase tracking-widest block mb-2"
+            style={{ color: '#64748b', letterSpacing: '0.1em' }}
+          >
+            EVENTS
+          </span>
+          <ul className="space-y-1.5">
             {scene.events.map((evt, i) => (
-              <li key={i} className="text-[10px] text-gray-500 flex gap-2">
-                <span className="text-purple-600">·</span>{evt}
+              <li
+                key={i}
+                className="flex gap-2 items-start px-3 py-2 rounded-lg"
+                style={{ background: '#222240', borderLeft: '2px solid #f97316' }}
+              >
+                <span className="shrink-0" style={{ color: '#f97316', fontSize: 10, lineHeight: '16px' }}>▸</span>
+                <span className="text-[11px] leading-relaxed" style={{ color: '#94a3b8' }}>{evt}</span>
               </li>
             ))}
           </ul>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

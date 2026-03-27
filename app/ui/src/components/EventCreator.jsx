@@ -1,13 +1,5 @@
 import { useState } from 'react'
 
-const healthColor = (status) => ({
-  healthy: 'text-green-400',
-  injured: 'text-yellow-400',
-  hospitalized: 'text-red-400',
-  deceased: 'text-gray-500',
-  absent: 'text-gray-500',
-}[status] ?? 'text-gray-400')
-
 export default function EventCreator({ characters, world, onClose }) {
   const [targetTime, setTargetTime] = useState('')
   const [description, setDescription] = useState('')
@@ -58,115 +50,206 @@ export default function EventCreator({ characters, world, onClose }) {
   const hardConflicts = validationResult?.conflicts?.filter(c => c.level === 'hard') ?? []
   const warnings = validationResult?.conflicts?.filter(c => c.level === 'warning') ?? []
 
+  const inputStyle = {
+    background: '#222240',
+    border: '1px solid #2a2a4a',
+    color: '#f1f5f9',
+    fontFamily: 'monospace',
+    fontSize: 13,
+    outline: 'none',
+    borderRadius: 12,
+    padding: '10px 14px',
+    width: '100%',
+    boxSizing: 'border-box',
+  }
+
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-end justify-center z-50" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
+      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+      onClick={onClose}
+    >
       <div
-        className="bg-gray-900 border-t border-gray-700 w-full max-w-2xl rounded-t-xl p-6 space-y-5 max-h-[80vh] overflow-y-auto"
+        className="w-full max-w-xl max-h-[82vh] overflow-y-auto card-scroll animate-slide-up"
+        style={{
+          background: '#1e1e38',
+          border: '1px solid #2a2a4a',
+          borderRadius: 20,
+          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-gray-100">Propose clock event</h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-300 text-xs">✕ Close</button>
-        </div>
-
-        <div>
-          <label className="text-[10px] text-gray-500 uppercase tracking-wide block mb-1">Target time (YYYY-MM-DD-HHmm)</label>
-          <input
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-purple-500"
-            placeholder="2026-03-27-1400"
-            value={targetTime}
-            onChange={e => setTargetTime(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label className="text-[10px] text-gray-500 uppercase tracking-wide block mb-1">What happens</label>
-          <textarea
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-purple-500 resize-none"
-            rows={3}
-            placeholder="Describe the event…"
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <label className="text-[10px] text-gray-500 uppercase tracking-wide block mb-2">Characters involved</label>
-          <div className="grid grid-cols-2 gap-2">
-            {characters.map(char => (
-              <div
-                key={char.id}
-                onClick={() => toggleChar(char.id)}
-                className={`flex items-center gap-3 p-2 rounded border cursor-pointer transition-colors ${
-                  selectedChars.includes(char.id)
-                    ? 'border-purple-500 bg-purple-900/30'
-                    : 'border-gray-700 bg-gray-800/50 hover:border-gray-600'
-                }`}
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-100 truncate">{char.name}</p>
-                  <p className="text-[10px] text-gray-500 truncate">
-                    {world?.locations?.find(l => l.id === char.current_location)?.name ?? char.current_location}
-                  </p>
-                </div>
-                <span className={`text-[10px] ${healthColor(char.health_status)}`}>
-                  {char.health_status}
-                </span>
-              </div>
-            ))}
+        <div className="px-6 py-5 space-y-5">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <h2 className="font-bold text-sm uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.1em' }}>
+              Propose Event
+            </h2>
+            <button
+              onClick={onClose}
+              className="font-mono text-xs transition-colors rounded-lg px-2 py-1"
+              style={{ color: '#64748b' }}
+              onMouseEnter={e => { e.currentTarget.style.color = '#f1f5f9'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent' }}
+            >
+              Close
+            </button>
           </div>
-        </div>
 
-        <div>
-          <label className="text-[10px] text-gray-500 uppercase tracking-wide block mb-1">Location</label>
-          <select
-            className="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-purple-500"
-            value={location}
-            onChange={e => setLocation(e.target.value)}
-          >
-            <option value="">Select location…</option>
-            {world?.locations?.map(l => (
-              <option key={l.id} value={l.id}>{l.name}</option>
-            ))}
-          </select>
-        </div>
-
-        {validating && (
-          <p className="text-xs text-purple-400">Running validation skill… (refresh after running validate-events in Claude Code)</p>
-        )}
-        {validationResult && (
-          <div className="space-y-2">
-            {hardConflicts.map((c, i) => (
-              <div key={i} className="bg-red-950/50 border border-red-800 rounded px-3 py-2 text-xs text-red-300">
-                ✗ {c.character}: {c.reason}
-              </div>
-            ))}
-            {warnings.map((c, i) => (
-              <div key={i} className="bg-yellow-950/50 border border-yellow-800 rounded px-3 py-2 text-xs text-yellow-300">
-                ⚠ {c.character}: {c.reason}
-              </div>
-            ))}
-            {validationResult.status === 'validated' && (
-              <div className="bg-green-950/50 border border-green-800 rounded px-3 py-2 text-xs text-green-300">
-                ✓ Validated — run world-clock skill to advance
-              </div>
-            )}
+          {/* Target time */}
+          <div>
+            <label className="font-mono text-[10px] uppercase tracking-widest block mb-1.5" style={{ color: '#64748b' }}>
+              Target Time (YYYY-MM-DD-HHmm)
+            </label>
+            <input
+              style={inputStyle}
+              placeholder="2026-03-27-1400"
+              value={targetTime}
+              onChange={e => setTargetTime(e.target.value)}
+            />
           </div>
-        )}
 
-        <div className="flex gap-3 justify-end">
-          <button
-            onClick={handleSubmit}
-            disabled={submitting || !targetTime || !description}
-            className="text-sm bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 text-white px-4 py-2 rounded"
-          >
-            {submitting ? 'Saving…' : 'Save & validate'}
-          </button>
-          {validationResult?.status === 'validated' && (
-            <div className="text-xs text-gray-500 self-center">
-              Then run: <code className="bg-gray-800 px-2 py-1 rounded">validate-events</code> → <code className="bg-gray-800 px-2 py-1 rounded">world-clock</code>
+          {/* Description */}
+          <div>
+            <label className="font-mono text-[10px] uppercase tracking-widest block mb-1.5" style={{ color: '#64748b' }}>
+              What Happens
+            </label>
+            <textarea
+              style={{ ...inputStyle, resize: 'none' }}
+              rows={3}
+              placeholder="Describe the event..."
+              value={description}
+              onChange={e => setDescription(e.target.value)}
+            />
+          </div>
+
+          {/* Characters */}
+          <div>
+            <label className="font-mono text-[10px] uppercase tracking-widest block mb-2" style={{ color: '#64748b' }}>
+              Characters Involved
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {characters.map(char => {
+                const isSelected = selectedChars.includes(char.id)
+                const initials = char.name.split(' ').map(w => w[0]).join('')
+                return (
+                  <div
+                    key={char.id}
+                    onClick={() => toggleChar(char.id)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer transition-all"
+                    style={{
+                      border: `1px solid ${isSelected ? 'rgba(249,115,22,0.4)' : '#2a2a4a'}`,
+                      background: isSelected ? 'rgba(249,115,22,0.08)' : 'transparent',
+                    }}
+                  >
+                    <div
+                      className="shrink-0 flex items-center justify-center rounded-full font-bold"
+                      style={{
+                        width: 24, height: 24,
+                        background: isSelected ? 'rgba(249,115,22,0.2)' : '#222240',
+                        color: isSelected ? '#f97316' : '#64748b',
+                        fontSize: 9,
+                      }}
+                    >
+                      {initials}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs truncate" style={{ color: '#f1f5f9' }}>{char.name}</p>
+                      <p className="text-[10px] truncate" style={{ color: '#64748b' }}>
+                        {world?.locations?.find(l => l.id === char.current_location)?.name ?? char.current_location}
+                      </p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Location */}
+          <div>
+            <label className="font-mono text-[10px] uppercase tracking-widest block mb-1.5" style={{ color: '#64748b' }}>
+              Location
+            </label>
+            <select
+              style={{ ...inputStyle, appearance: 'none' }}
+              value={location}
+              onChange={e => setLocation(e.target.value)}
+            >
+              <option value="">Select location...</option>
+              {world?.locations?.map(l => (
+                <option key={l.id} value={l.id}>{l.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Validation status */}
+          {validating && (
+            <div className="flex items-center gap-2 py-2">
+              <span className="rounded-full animate-glow-pulse" style={{ width: 6, height: 6, background: '#f97316' }} />
+              <span className="font-mono text-xs" style={{ color: '#f97316' }}>
+                Validating... run validate-events skill to process
+              </span>
             </div>
           )}
+
+          {validationResult && (
+            <div className="space-y-2">
+              {hardConflicts.map((c, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-2 px-3 py-2 font-mono text-xs rounded-lg"
+                  style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.3)', color: '#f87171' }}
+                >
+                  <span>x</span><span>{c.character}: {c.reason}</span>
+                </div>
+              ))}
+              {warnings.map((c, i) => (
+                <div
+                  key={i}
+                  className="flex items-start gap-2 px-3 py-2 font-mono text-xs rounded-lg"
+                  style={{ background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.3)', color: '#fbbf24' }}
+                >
+                  <span>!</span><span>{c.character}: {c.reason}</span>
+                </div>
+              ))}
+              {validationResult.status === 'validated' && (
+                <div
+                  className="flex items-center gap-2 px-3 py-2 font-mono text-xs rounded-lg"
+                  style={{ background: 'rgba(34,211,238,0.08)', border: '1px solid rgba(34,211,238,0.3)', color: '#22d3ee' }}
+                >
+                  <span>OK</span><span>Validated - run world-clock to advance</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3 justify-end pb-1">
+            <button
+              onClick={onClose}
+              className="font-mono text-xs px-4 py-2 rounded-lg transition-colors"
+              style={{ color: '#94a3b8', border: '1px solid #2a2a4a' }}
+              onMouseEnter={e => e.currentTarget.style.borderColor = '#64748b'}
+              onMouseLeave={e => e.currentTarget.style.borderColor = '#2a2a4a'}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={submitting || !targetTime || !description}
+              className="font-mono font-bold text-xs px-5 py-2 rounded-lg transition-all disabled:opacity-40"
+              style={{
+                background: '#f97316',
+                color: '#000',
+                border: 'none',
+                cursor: (!targetTime || !description) ? 'not-allowed' : 'pointer',
+              }}
+              onMouseEnter={e => { if (!e.currentTarget.disabled) e.currentTarget.style.background = '#fb923c' }}
+              onMouseLeave={e => e.currentTarget.style.background = '#f97316'}
+            >
+              {submitting ? 'Saving...' : 'Save & Validate'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
