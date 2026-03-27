@@ -42,5 +42,5 @@ func distPath() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return filepath.Join(wd, "..", "dist")
+	return filepath.Join(wd, "dist")
 }
