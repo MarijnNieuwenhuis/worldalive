@@ -27,18 +27,19 @@ Always follow `docs/world-json-schema.md` exactly. Every file must include `"sch
    - Read `worlds/billings-montana/clock.md` for active events this tick
    - Output per schema
 
-4. For each character in `worlds/billings-montana/characters/manual/` and `worlds/billings-montana/characters/generated/` where `STATUS.md` shows `Type: active` or `Type: manual`:
+4. For each character in `worlds/billings-montana/characters/manual/` and `worlds/billings-montana/characters/generated/` where `STATUS.md` shows `Type: active`, `Type: manual`, or `Type: generated`:
    - Read all their `.md` files
-   - Extract: current location from STATUS.md, health status from STATUS.md (default `healthy` if not set)
+   - Extract: `id` (folder name, e.g., `jolene-voss`), `name` (full name from SOUL.md or STATUS.md), current location from STATUS.md, health status from STATUS.md (default `healthy` if not set)
    - Distill soul.md into a 1-paragraph `soul_summary`
    - Distill personality.md into 2-sentence `personality_summary`
    - Extract top current goal from goals.md into 1-sentence `goals_summary`
    - Extract all relationships from relationships.md into the relationships array
    - Extract the diary entry for this tick from diary.md (the most recent entry)
    - Write `dist/ticks/{timestamp}/characters/{character-id}.json`
-   - Add character ID to both `all_characters` and (if in a significant event) `active_characters` in the index entry
+   - Add character ID to `all_characters` in the index entry
+   - Add character ID to `active_characters` only if they appear in the scene file's character list for this tick (i.e., named in `scenes/{timestamp}.md`)
 
-5. Read the scene file for this tick from `worlds/billings-montana/scenes/`. The scene file is named `{timestamp}.md`. Extract narrative, characters involved, location, and events list. Write `dist/ticks/{timestamp}/scenes/{timestamp}.json`.
+5. Read the scene file for this tick from `worlds/billings-montana/scenes/`. The scene file is named `{timestamp}.md`. Extract narrative, characters involved, location, and events list. Write `dist/ticks/{timestamp}/scenes/{timestamp}.json`. If the scene file does not exist, write a minimal scene file: `{ "schema_version": 1, "timestamp": "{timestamp}", "narrative": "", "characters": [], "location": "", "events": [] }`.
 
 6. Read existing `dist/index.json` (create it fresh if it doesn't exist). Add a new entry for this tick:
    - `timestamp`: the current `{timestamp}`
