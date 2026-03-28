@@ -119,16 +119,6 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
     charsByLocation[loc].push(char)
   }
 
-  // Time-of-day ambient color
-  const hour = parseInt(world?.clock?.match(/(\d{1,2}):\d{2}/)?.[1] ?? '12')
-  const isEvening = hour >= 18 || hour < 6
-  const isMorning = hour >= 6 && hour < 12
-  const ambientColor = isEvening
-    ? 'rgba(20,30,60,0.15)' // cool blue evening
-    : isMorning
-      ? 'rgba(60,40,20,0.06)' // warm morning
-      : 'rgba(40,35,20,0.04)' // subtle warm midday
-
   return (
     <div
       ref={containerRef}
@@ -149,15 +139,6 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         }}
       />
 
-      {/* Time-of-day ambient overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at 50% 40%, ${ambientColor} 0%, rgba(22,21,43,0.08) 100%)`,
-          borderRadius: 'var(--radius-card)',
-          transition: 'background 0.5s ease',
-        }}
-      />
 
       {/* Map overlay — world clock + active count (narrative framing, not a metric) */}
       <div className="absolute top-4 right-4 z-10 pointer-events-none">
