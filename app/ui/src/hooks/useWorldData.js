@@ -91,7 +91,7 @@ export function useWorldData(currentTick, setTick) {
         setIndex(idx)
 
         const isOnLatest = !currentTick ||
-          currentTick === index?.ticks[index.ticks.length - 1]?.timestamp
+          currentTick === idx.ticks[idx.ticks.length - 1]?.timestamp
 
         if (isOnLatest) {
           const newLatest = idx.ticks[idx.ticks.length - 1]?.timestamp
