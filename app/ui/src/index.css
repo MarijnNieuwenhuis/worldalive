@@ -67,12 +67,29 @@
 
 /* ── Dashboard card base ── */
 .dash-card {
-  background: var(--bg-card);
+  background: linear-gradient(145deg, #1f1f3a 0%, #1a1a34 50%, #1e1e38 100%);
   border: 1px solid var(--border-card);
   border-radius: var(--radius-card);
   padding: 24px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.02);
+}
+
+/* ── Scroll fade indicator ── */
+.scroll-fade {
+  position: relative;
+}
+.scroll-fade::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: linear-gradient(transparent, var(--bg-card));
+  pointer-events: none;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
 }
 
 /* ── Focus ring for inputs ── */

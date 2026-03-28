@@ -58,7 +58,7 @@ function MapPin({ x, y, label, selected, onSelect, svgRatio = 1 }) {
   )
 }
 
-export default function MapPanel({ world, characters, selectedCharacter, onSelectCharacter }) {
+export default function MapPanel({ world, characters, selectedCharacter, onSelectCharacter, scene }) {
   const [mapSVG, setMapSVG] = useState(null)
   const [svgRatio, setSvgRatio] = useState(1)
   const containerRef = useRef(null)
@@ -105,7 +105,7 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         <div
           className="absolute inset-0 w-full h-full [&>svg]:w-full [&>svg]:h-full"
           dangerouslySetInnerHTML={{ __html: mapSVG }}
-          style={{ opacity: 0.7 }}
+          style={{ opacity: 0.85 }}
         />
       ) : (
         <div className="absolute inset-0 flex items-center justify-center font-mono text-xs" style={{ color: '#2a2a4a' }}>
@@ -117,7 +117,7 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, transparent 30%, rgba(22,21,43,0.6) 100%)',
+          background: 'radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(22,21,43,0.4) 100%)',
           borderRadius: 'var(--radius-card)',
         }}
       />
@@ -135,33 +135,19 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         <span className="font-mono text-[10px]" style={{ color: '#64748b' }}>{characters.length} characters</span>
       </div>
 
-      {/* Zoom controls */}
-      <div
-        className="absolute right-4 flex flex-col gap-1.5 z-10"
-        style={{ top: '50%', transform: 'translateY(-50%)' }}
-        onClick={e => e.stopPropagation()}
-      >
-        {['+', '−'].map(icon => (
-          <button
-            key={icon}
-            className="flex items-center justify-center font-mono rounded-lg transition-all"
-            style={{
-              width: 32, height: 32,
-              border: '1px solid #2a2a4a',
-              background: 'rgba(30,30,56,0.8)',
-              color: '#94a3b8',
-              fontSize: 16,
-              backdropFilter: 'blur(4px)',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = '#f97316'; e.currentTarget.style.color = '#f97316' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = '#2a2a4a'; e.currentTarget.style.color = '#94a3b8' }}
-          >
-            {icon}
-          </button>
-        ))}
-      </div>
+      {/* Scene event summary — what's happening now */}
+      {scene?.events?.length > 0 && (
+        <div
+          className="absolute top-14 left-4 z-10 flex items-start gap-2 px-3 py-1.5 rounded-lg pointer-events-none"
+          style={{ background: 'rgba(30,30,56,0.7)', backdropFilter: 'blur(4px)', maxWidth: '45%', borderLeft: '2px solid rgba(249,115,22,0.5)' }}
+        >
+          <span className="text-[10px] leading-snug" style={{ color: '#94a3b8' }}>
+            {scene.events[0].length > 80 ? scene.events[0].substring(0, 80) + '...' : scene.events[0]}
+          </span>
+        </div>
+      )}
 
-      {/* spacer for timeline */}
+      {/* Zoom controls removed — not functional yet */}
 
       {/* Pins overlay */}
       <svg
@@ -175,7 +161,7 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
 
           return chars.map((char, i) => {
             const cols = Math.ceil(Math.sqrt(chars.length))
-            const gap = chars.length > 3 ? 2.0 : 2.8
+            const gap = chars.length > 5 ? 2.2 : chars.length > 3 ? 2.5 : 3.0
             const col = i % cols
             const row = Math.floor(i / cols)
             const totalCols = Math.min(cols, chars.length)
@@ -196,7 +182,27 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
           })
         })}
 
-        {/* Location labels omitted — SVG map already has them */}
+        {/* Location cluster count badges — show when 3+ characters at one spot */}
+        {world?.locations?.map(location => {
+          const chars = charsByLocation[location.id] ?? []
+          if (chars.length < 3) return null
+          return (
+            <g key={`count-${location.id}`} transform={`translate(${location.x}, ${location.y})`}>
+              <circle cx={-2.5 / svgRatio} cy={-2.5} r={1.5 / svgRatio} fill="rgba(249,115,22,0.9)" />
+              <text
+                x={-2.5 / svgRatio} y={-2}
+                fill="#fff"
+                fontSize={1.2}
+                fontFamily="monospace"
+                fontWeight="bold"
+                textAnchor="middle"
+                style={{ pointerEvents: 'none' }}
+              >
+                {chars.length}
+              </text>
+            </g>
+          )
+        })}
       </svg>
     </div>
   )

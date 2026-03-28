@@ -55,21 +55,21 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
         <span className="font-mono text-[10px] uppercase tracking-wider mb-2 block" style={{ color: '#64748b' }}>
           {generated.length} other characters
         </span>
-        <div className="flex-1 overflow-y-auto card-scroll space-y-1">
-          {generated.map(char => (
+        <div className="flex-1 overflow-y-auto card-scroll">
+          {generated.map((char, idx) => (
             <div
               key={char.id}
               onClick={() => onSelectCharacter(char.id)}
-              className="flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-all"
-              style={{ color: '#94a3b8' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = '#f1f5f9' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8' }}
+              className="flex items-center gap-2 px-2.5 py-2 rounded cursor-pointer transition-all"
+              style={{ color: '#94a3b8', background: idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#f1f5f9' }}
+              onMouseLeave={e => { e.currentTarget.style.background = idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'; e.currentTarget.style.color = '#94a3b8' }}
             >
               <span className="font-mono text-[10px] shrink-0" style={{ color: '#64748b', width: 20 }}>
                 {char.name.split(' ').map(w => w[0]).join('')}
               </span>
               <span className="text-[11px] truncate">{char.name}</span>
-              <span className="text-[10px] ml-auto shrink-0" style={{ color: '#64748b' }}>
+              <span className="text-[10px] ml-auto shrink-0 truncate" style={{ color: '#64748b', maxWidth: 100 }}>
                 {locationName(char.current_location)}
               </span>
             </div>
@@ -90,25 +90,25 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
         <button
           onClick={() => onSelectCharacter(null)}
           className="font-mono text-[10px] transition-colors"
-          style={{ color: '#64748b' }}
-          onMouseEnter={e => e.currentTarget.style.color = '#94a3b8'}
-          onMouseLeave={e => e.currentTarget.style.color = '#64748b'}
+          style={{ color: '#64748b', padding: '4px 8px', borderRadius: 6 }}
+          onMouseEnter={e => { e.currentTarget.style.color = '#f1f5f9'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent' }}
         >
           CLOSE
         </button>
       </div>
 
       {/* Identity block */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-3">
         {/* Initials circle */}
         <div
           className="shrink-0 flex items-center justify-center rounded-full font-bold"
           style={{
-            width: 52, height: 52,
-            background: 'rgba(249,115,22,0.12)',
-            border: '2px solid rgba(249,115,22,0.3)',
-            color: '#f97316',
-            fontSize: 18,
+            width: 44, height: 44,
+            background: selected.type === 'manual' ? 'rgba(249,115,22,0.15)' : 'rgba(34,211,238,0.1)',
+            border: `2px solid ${selected.type === 'manual' ? 'rgba(249,115,22,0.35)' : 'rgba(34,211,238,0.25)'}`,
+            color: selected.type === 'manual' ? '#f97316' : '#22d3ee',
+            fontSize: 15,
           }}
         >
           {initials}
@@ -136,17 +136,19 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
       </div>
 
       {/* Tab toggle */}
-      <div className="flex gap-1 mb-3">
+      <div className="flex gap-0 mb-3 rounded-lg overflow-hidden" style={{ border: '1px solid #2a2a4a' }}>
         {['brief', 'diary'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className="font-mono text-[10px] uppercase tracking-wider px-3 py-1.5 rounded-md transition-all"
+            className="flex-1 font-mono text-[11px] uppercase tracking-wider py-2 transition-all font-medium"
             style={{
-              background: activeTab === tab ? 'rgba(249,115,22,0.12)' : 'transparent',
+              background: activeTab === tab ? 'rgba(249,115,22,0.15)' : 'transparent',
               color: activeTab === tab ? '#f97316' : '#64748b',
-              border: `1px solid ${activeTab === tab ? 'rgba(249,115,22,0.3)' : 'transparent'}`,
+              borderRight: tab === 'brief' ? '1px solid #2a2a4a' : 'none',
             }}
+            onMouseEnter={e => { if (activeTab !== tab) e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
+            onMouseLeave={e => { if (activeTab !== tab) e.currentTarget.style.background = 'transparent' }}
           >
             {tab}
           </button>
@@ -154,45 +156,50 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto card-scroll space-y-4">
+      <div className="flex-1 overflow-y-auto card-scroll space-y-3">
         {activeTab === 'brief' ? (
           <>
-            {/* Soul summary */}
+            {/* Soul summary — truncated to keep spotlight scannable */}
             {selected.soul_summary && (
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-wider block mb-1.5" style={{ color: '#64748b' }}>
+              <div className="pb-3" style={{ borderBottom: '1px solid #2a2a4a' }}>
+                <span className="font-mono text-[10px] uppercase tracking-wider font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
                   About
                 </span>
-                <p className="text-xs leading-relaxed" style={{ color: '#94a3b8' }}>
+                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {selected.soul_summary}
                 </p>
               </div>
             )}
 
-            {/* Personality */}
+            {/* Personality — also truncated */}
             {selected.personality_summary && (
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-wider block mb-1.5" style={{ color: '#64748b' }}>
+              <div className="pb-3" style={{ borderBottom: '1px solid #2a2a4a' }}>
+                <span className="font-mono text-[10px] uppercase tracking-wider font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
                   Personality
                 </span>
-                <p className="text-xs leading-relaxed" style={{ color: '#94a3b8' }}>
+                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                   {selected.personality_summary}
                 </p>
               </div>
             )}
 
-            {/* Relationships */}
-            {selected.relationships?.length > 0 && (
+            {/* Relationships — only show navigable ones (characters in the loaded world) */}
+            {selected.relationships?.length > 0 && (() => {
+              const charIds = new Set(characters.map(c => c.id))
+              const navigable = selected.relationships.filter(r => charIds.has(r.character_id))
+              const external = selected.relationships.filter(r => !charIds.has(r.character_id))
+              if (!navigable.length && !external.length) return null
+              return (
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-wider block mb-2" style={{ color: '#64748b' }}>
+                <span className="font-mono text-[10px] uppercase tracking-wider font-medium block mb-2" style={{ color: '#94a3b8' }}>
                   Relationships
                 </span>
                 <div className="flex flex-wrap gap-1.5">
-                  {selected.relationships.map(r => (
+                  {navigable.map(r => (
                     <button
                       key={r.character_id}
                       onClick={() => onSelectCharacter(r.character_id)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all text-[10px]"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all text-[10px] cursor-pointer"
                       style={{
                         background: '#222240',
                         border: '1px solid #2a2a4a',
@@ -206,21 +213,40 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
                       {r.name}
                     </button>
                   ))}
+                  {external.map(r => (
+                    <span
+                      key={r.character_id}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px]"
+                      style={{ color: '#64748b' }}
+                      title={r.dynamic}
+                    >
+                      <span style={{ fontSize: 8 }}>○</span>
+                      {r.name}
+                    </span>
+                  ))}
                 </div>
               </div>
-            )}
+              )
+            })()}
           </>
         ) : (
           /* Diary tab */
           <div>
             {selected.diary_entry ? (
-              <p className="text-xs leading-relaxed italic" style={{ color: '#94a3b8' }}>
-                {selected.diary_entry}
-              </p>
+              <div style={{ borderLeft: '3px solid rgba(249,115,22,0.3)', paddingLeft: 14 }}>
+                <p className="text-[11px] leading-[1.7] italic" style={{ color: '#94a3b8' }}>
+                  {selected.diary_entry}
+                </p>
+              </div>
             ) : (
-              <p className="text-xs" style={{ color: '#64748b' }}>
-                No diary entry for this tick.
-              </p>
+              <div className="flex flex-col items-center gap-2 py-4">
+                <span className="text-[11px]" style={{ color: '#64748b' }}>
+                  No diary entry for this tick
+                </span>
+                <span className="text-[10px] font-mono" style={{ color: '#2a2a4a' }}>
+                  {selected.type === 'manual' ? 'Diary updates after world-clock advances' : 'Only manual characters have diary entries'}
+                </span>
+              </div>
             )}
           </div>
         )}
