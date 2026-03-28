@@ -4,6 +4,7 @@ export default function TimelineScrubber({ index, currentTick, onSelectTick }) {
   if (!index?.ticks?.length) return null
 
   const activeTick = currentTick ?? index.ticks[index.ticks.length - 1].timestamp
+  const activeIdx = index.ticks.findIndex(t => t.timestamp === activeTick)
 
   const shortLabel = (label) => {
     const m = label?.match(/(\d{1,2}:\d{2})/)
@@ -11,71 +12,115 @@ export default function TimelineScrubber({ index, currentTick, onSelectTick }) {
   }
 
   return (
-    <div className="flex items-center px-6 relative" style={{ height: 56 }}>
-      {/* Horizontal line */}
-      <div
-        className="absolute left-6 right-6"
-        style={{ height: 2, background: 'rgba(42,42,74,0.6)', top: '50%', transform: 'translateY(-50%)', borderRadius: 1 }}
-      />
+    <div className="flex items-stretch px-3 gap-1" style={{ height: 60 }}>
+      {index.ticks.map((tick, i) => {
+        const isSelected = tick.timestamp === activeTick
+        const isPast = i < activeIdx
+        const isFuture = i > activeIdx
 
-      {/* Dots */}
-      <div className="relative w-full flex items-center justify-between">
-        {index.ticks.map((tick) => {
-          const isSelected = tick.timestamp === activeTick
-          const isPast = index.ticks.indexOf(tick) < index.ticks.findIndex(t => t.timestamp === activeTick)
-          return (
-            <TimelineDot
-              key={tick.timestamp}
-              tick={tick}
-              isSelected={isSelected}
-              isPast={isPast}
-              onClick={() => onSelectTick(tick.timestamp)}
-              shortLabel={shortLabel}
-            />
-          )
-        })}
-      </div>
+        return (
+          <TimelineSegment
+            key={tick.timestamp}
+            tick={tick}
+            isSelected={isSelected}
+            isPast={isPast}
+            isFuture={isFuture}
+            tickIndex={i}
+            totalTicks={index.ticks.length}
+            onClick={() => onSelectTick(tick.timestamp)}
+            shortLabel={shortLabel}
+          />
+        )
+      })}
     </div>
   )
 }
 
-function TimelineDot({ tick, isSelected, isPast, onClick, shortLabel }) {
+function TimelineSegment({ tick, isSelected, isPast, isFuture, tickIndex, totalTicks, onClick, shortLabel }) {
   const [hovered, setHovered] = useState(false)
+  const [clicked, setClicked] = useState(false)
+
+  const handleClick = () => {
+    setClicked(true)
+    setTimeout(() => setClicked(false), 400)
+    onClick()
+  }
+
+  const dotColor = isSelected
+    ? '#22d3ee'
+    : isPast
+      ? 'rgba(34,211,238,0.5)'
+      : 'rgba(100,116,139,0.3)'
+
+  const timeColor = isSelected
+    ? '#22d3ee'
+    : isPast
+      ? 'rgba(34,211,238,0.7)'
+      : hovered
+        ? '#94a3b8'
+        : '#64748b'
 
   return (
     <div
-      className="relative flex flex-col items-center cursor-pointer"
-      onClick={onClick}
+      className="flex-1 flex items-center gap-2.5 px-3 rounded-xl cursor-pointer"
+      onClick={handleClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      title={tick.summary || tick.label}
-      style={{ padding: '14px 24px', margin: '-14px -24px' }}
+      style={{
+        background: isSelected
+          ? 'rgba(34,211,238,0.07)'
+          : hovered
+            ? 'rgba(255,255,255,0.025)'
+            : 'transparent',
+        border: `1px solid ${isSelected ? 'rgba(34,211,238,0.18)' : hovered ? 'rgba(255,255,255,0.04)' : 'transparent'}`,
+        transform: clicked ? 'scale(0.96)' : 'scale(1)',
+        transition: 'background 0.15s, border-color 0.15s, transform 0.1s',
+      }}
     >
-      {/* The dot */}
-      <div
-        className="rounded-full transition-all duration-150"
-        style={{
-          width: isSelected ? 16 : hovered ? 14 : 10,
-          height: isSelected ? 16 : hovered ? 14 : 10,
-          background: isSelected ? '#22d3ee' : isPast ? 'rgba(34,211,238,0.35)' : (hovered ? 'rgba(148,163,184,0.5)' : 'rgba(100,116,139,0.3)'),
-          border: `2px solid ${isSelected ? '#22d3ee' : isPast ? 'rgba(34,211,238,0.6)' : (hovered ? '#94a3b8' : 'rgba(100,116,139,0.5)')}`,
-          boxShadow: isSelected ? '0 0 12px rgba(34,211,238,0.5)' : (hovered ? '0 0 6px rgba(148,163,184,0.2)' : 'none'),
-        }}
-      />
-      {/* Time label — always show on selected, show on hover for others */}
-      {(isSelected || hovered) && (
-        <span
-          className="absolute font-mono whitespace-nowrap font-bold"
+      {/* Dot + time column */}
+      <div className="flex flex-col items-center shrink-0 gap-1" style={{ width: 32 }}>
+        {/* Dot */}
+        <div
+          className={clicked ? 'animate-tick-bounce' : ''}
           style={{
-            fontSize: 11,
-            top: 28,
-            color: isSelected ? '#22d3ee' : '#94a3b8',
-            letterSpacing: '0.05em',
-            pointerEvents: 'none',
+            width: isSelected ? 9 : 6,
+            height: isSelected ? 9 : 6,
+            borderRadius: '50%',
+            background: dotColor,
+            boxShadow: isSelected ? '0 0 10px rgba(34,211,238,0.6)' : 'none',
+            transition: 'all 0.2s',
+            flexShrink: 0,
+          }}
+        />
+        {/* Time label — always visible */}
+        <span
+          className="font-mono font-bold leading-none"
+          style={{
+            fontSize: isSelected ? 11 : 10,
+            color: timeColor,
+            letterSpacing: '0.03em',
+            transition: 'color 0.15s',
           }}
         >
           {shortLabel(tick.label)}
         </span>
+      </div>
+
+      {/* Tick summary — always visible, intensity varies by state */}
+      {tick.summary && (
+        <p
+          className="text-[9px] leading-snug flex-1 min-w-0"
+          style={{
+            color: isSelected ? '#94a3b8' : hovered ? '#64748b' : '#4a5568',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            transition: 'color 0.15s',
+          }}
+        >
+          {tick.summary.length > 60 ? tick.summary.slice(0, 60) + '…' : tick.summary}
+        </p>
       )}
     </div>
   )

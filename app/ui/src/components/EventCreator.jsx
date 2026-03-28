@@ -51,31 +51,31 @@ export default function EventCreator({ characters, world, onClose }) {
   const warnings = validationResult?.conflicts?.filter(c => c.level === 'warning') ?? []
 
   const inputStyle = {
-    background: '#222240',
-    border: '1px solid #2a2a4a',
+    background: '#151428',
+    border: '1px solid #262545',
     color: '#f1f5f9',
-    fontFamily: 'monospace',
+    fontFamily: 'inherit',
     fontSize: 13,
     outline: 'none',
-    borderRadius: 12,
-    padding: '10px 14px',
+    borderRadius: 14,
+    padding: '12px 16px',
     width: '100%',
     boxSizing: 'border-box',
   }
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center animate-fade-in"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)' }}
+      className="fixed inset-0 z-50 flex items-center justify-center animate-backdrop"
+      style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl max-h-[82vh] overflow-y-auto card-scroll animate-slide-up"
+        className="w-full max-w-xl max-h-[82vh] overflow-y-auto card-scroll animate-slide-up-spring"
         style={{
-          background: '#1e1e38',
-          border: '1px solid #2a2a4a',
-          borderRadius: 20,
-          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+          background: 'linear-gradient(160deg, #1c1b38 0%, #18172e 100%)',
+          border: '1px solid #262545',
+          borderRadius: 24,
+          boxShadow: '0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.03) inset',
         }}
         onClick={e => e.stopPropagation()}
       >

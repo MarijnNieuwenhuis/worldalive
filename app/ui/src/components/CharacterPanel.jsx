@@ -1,113 +1,250 @@
 import { useState } from 'react'
 
 export default function CharacterPanel({ characters, world, selectedCharacter, onSelectCharacter }) {
-  const [activeTab, setActiveTab] = useState('brief')
   const selected = characters.find(c => c.id === selectedCharacter)
+  const manual = characters.filter(c => c.type === 'manual')
+  const npcs = characters.filter(c => c.type !== 'manual')
 
   const locationName = (locationId) =>
     world?.locations?.find(l => l.id === locationId)?.name ?? locationId
 
-  // No character selected — show quick-glance roster
-  if (!selected) {
-    const manual = characters.filter(c => c.type === 'manual')
-    const generated = characters.filter(c => c.type !== 'manual')
-    return (
-      <div className="flex-1 flex flex-col min-h-0">
-        <h3 className="font-bold text-xs uppercase tracking-widest mb-4" style={{ color: '#f1f5f9', letterSpacing: '0.12em' }}>
-          CHARACTER SPOTLIGHT
-        </h3>
-        <p className="text-[11px] mb-4" style={{ color: '#64748b' }}>
-          Click a character on the map or roster to see their details.
-        </p>
+  return (
+    <div className="flex-1 flex flex-col min-h-0">
+      {/* Panel header */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div style={{ width: 3, height: 14, background: '#22d3ee', borderRadius: 2 }} />
+          <h3 className="font-bold text-xs uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.1em' }}>
+            Characters
+          </h3>
+          <span className="font-mono text-[9px] px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(34,211,238,0.08)', color: '#22d3ee' }}>
+            {characters.length}
+          </span>
+        </div>
+        {selected && (
+          <button
+            onClick={() => onSelectCharacter(null)}
+            className="text-[10px] font-mono px-2 py-1 rounded-md"
+            style={{ color: '#64748b' }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#f1f5f9'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent' }}
+          >
+            ALL
+          </button>
+        )}
+      </div>
 
-        {/* Protagonist highlight */}
-        {manual.map(char => (
+      {/* Animated view swap — key causes remount + entrance animation on selection change */}
+      <div key={selectedCharacter ?? '__list__'} className="flex-1 flex flex-col min-h-0 animate-panel-slide">
+        {selected ? (
+          <SelectedCharacterView
+            char={selected}
+            characters={characters}
+            locationName={locationName}
+            onSelectCharacter={onSelectCharacter}
+          />
+        ) : (
+          <CharacterListView
+            manual={manual}
+            npcs={npcs}
+            locationName={locationName}
+            selectedCharacter={selectedCharacter}
+            onSelectCharacter={onSelectCharacter}
+          />
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* ── Character List View (no selection) ── */
+function CharacterListView({ manual, npcs, locationName, selectedCharacter, onSelectCharacter }) {
+  return (
+    <div className="flex-1 overflow-y-auto card-scroll space-y-4 animate-fade-in-up">
+      {/* YOUR CHARACTERS section */}
+      {manual.length > 0 && (
+        <div>
+          <span className="font-mono text-[9px] uppercase tracking-widest block mb-2" style={{ color: '#f97316', letterSpacing: '0.12em' }}>
+            Your Characters
+          </span>
+          {manual.map(char => (
+            <div
+              key={char.id}
+              onClick={() => onSelectCharacter(char.id)}
+              className="flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-all"
+              style={{
+                background: 'rgba(249,115,22,0.05)',
+                border: '1px solid rgba(249,115,22,0.15)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.4)'; e.currentTarget.style.transform = 'translateX(2px)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.15)'; e.currentTarget.style.transform = 'translateX(0)' }}
+            >
+              <div
+                className="shrink-0 flex items-center justify-center rounded-full font-bold"
+                style={{ width: 38, height: 38, background: 'rgba(249,115,22,0.12)', border: '1.5px solid rgba(249,115,22,0.3)', color: '#f97316', fontSize: 13 }}
+              >
+                {char.name.split(' ').map(w => w[0]).join('')}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-bold" style={{ color: '#f1f5f9' }}>{char.name}</span>
+                </div>
+                <span className="text-[10px]" style={{ color: '#94a3b8' }}>
+                  {locationName(char.current_location)}
+                </span>
+              </div>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ opacity: 0.5 }}>
+                <path d="M6 4l4 4-4 4" stroke="#f97316" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          ))}
+
+          {/* Diary — hero content, show generously */}
+          {manual[0]?.diary_entry && (
+            <div
+              className="mt-2 px-4 py-3 rounded-xl cursor-pointer transition-all"
+              style={{
+                background: 'linear-gradient(135deg, rgba(249,115,22,0.04) 0%, rgba(249,115,22,0.01) 100%)',
+                borderLeft: '3px solid rgba(249,115,22,0.3)',
+                border: '1px solid rgba(249,115,22,0.08)',
+                borderLeftWidth: 3,
+                borderLeftColor: 'rgba(249,115,22,0.3)',
+              }}
+              onClick={() => onSelectCharacter(manual[0].id)}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.2)'; e.currentTarget.style.borderLeftColor = '#f97316' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.08)'; e.currentTarget.style.borderLeftColor = 'rgba(249,115,22,0.3)' }}
+            >
+              <p className="text-[12.5px] leading-[1.8] italic" style={{ color: '#c8d4de', fontFamily: 'Georgia, "Times New Roman", serif', display: '-webkit-box', WebkitLineClamp: 9, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                {manual[0].diary_entry}
+              </p>
+              <span className="text-[9px] font-mono uppercase tracking-widest block mt-2" style={{ color: 'rgba(249,115,22,0.5)', letterSpacing: '0.1em' }}>
+                read more →
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* NPCs section */}
+      <NPCListSection npcs={npcs} locationName={locationName} onSelectCharacter={onSelectCharacter} />
+    </div>
+  )
+}
+
+/* ── NPC List with Home-group collapse ── */
+function NPCListSection({ npcs, locationName, onSelectCharacter }) {
+  const [homeExpanded, setHomeExpanded] = useState(false)
+
+  const sorted = [...npcs].sort((a, b) => {
+    const aHome = locationName(a.current_location).toLowerCase() === 'home'
+    const bHome = locationName(b.current_location).toLowerCase() === 'home'
+    if (aHome && !bHome) return 1
+    if (!aHome && bHome) return -1
+    return 0
+  })
+
+  const active = sorted.filter(c => locationName(c.current_location).toLowerCase() !== 'home')
+  const atHome = sorted.filter(c => locationName(c.current_location).toLowerCase() === 'home')
+
+  return (
+    <div>
+      <span className="font-mono text-[9px] uppercase tracking-widest block mb-2" style={{ color: '#22d3ee', letterSpacing: '0.12em' }}>
+        Around Town
+      </span>
+      <div className="space-y-0.5">
+        {active.map((char, idx) => (
           <div
             key={char.id}
             onClick={() => onSelectCharacter(char.id)}
-            className="flex items-center gap-3 px-3 py-3 rounded-lg cursor-pointer transition-all mb-3"
+            className="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer transition-all"
             style={{
-              background: 'rgba(249,115,22,0.06)',
-              border: '1px solid rgba(249,115,22,0.25)',
+              background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+              border: '1px solid transparent',
             }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(249,115,22,0.5)'}
-            onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(249,115,22,0.25)'}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34,211,238,0.04)'; e.currentTarget.style.borderColor = 'rgba(34,211,238,0.12)'; e.currentTarget.style.transform = 'translateX(3px)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'; e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.transform = 'translateX(0)' }}
           >
             <div
-              className="shrink-0 flex items-center justify-center rounded-full font-bold"
-              style={{ width: 36, height: 36, background: 'rgba(249,115,22,0.15)', border: '1.5px solid rgba(249,115,22,0.4)', color: '#f97316', fontSize: 13 }}
+              className="shrink-0 flex items-center justify-center rounded-lg font-bold"
+              style={{ width: 30, height: 30, background: 'rgba(34,211,238,0.06)', border: '1px solid rgba(34,211,238,0.12)', color: '#4a6a80', fontSize: 10 }}
             >
               {char.name.split(' ').map(w => w[0]).join('')}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5">
-                <span className="text-xs font-bold" style={{ color: '#f1f5f9' }}>{char.name}</span>
-                <span className="font-mono px-1.5 py-0.5 rounded" style={{ fontSize: 8, background: 'rgba(249,115,22,0.15)', color: '#f97316' }}>YOUR CHARACTER</span>
+              <span className="text-[11px] font-medium block truncate" style={{ color: '#cbd5e1' }}>{char.name}</span>
+              <div className="flex items-center gap-1 mt-0.5">
+                <span style={{ width: 4, height: 4, borderRadius: 2, background: '#22d3ee', opacity: 0.5, display: 'inline-block' }} />
+                <span className="text-[9px] truncate" style={{ color: '#64748b' }}>{locationName(char.current_location)}</span>
               </div>
-              <span className="text-[10px]" style={{ color: '#94a3b8' }}>
-                {locationName(char.current_location)}
-              </span>
             </div>
           </div>
         ))}
 
-        {/* Generated characters list */}
-        <span className="font-mono text-[10px] uppercase tracking-wider mb-2 block" style={{ color: '#64748b' }}>
-          {generated.length} other characters
-        </span>
-        <div className="flex-1 overflow-y-auto card-scroll">
-          {generated.map((char, idx) => (
-            <div
-              key={char.id}
-              onClick={() => onSelectCharacter(char.id)}
-              className="flex items-center gap-2 px-2.5 py-2 rounded cursor-pointer transition-all"
-              style={{ color: '#94a3b8', background: idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent' }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#f1f5f9' }}
-              onMouseLeave={e => { e.currentTarget.style.background = idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'; e.currentTarget.style.color = '#94a3b8' }}
+        {/* Collapsed "at home" group */}
+        {atHome.length > 0 && (
+          <div>
+            <button
+              onClick={() => setHomeExpanded(e => !e)}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-xl transition-all"
+              style={{ color: '#3d3c5c', border: '1px solid transparent' }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.color = '#64748b' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#3d3c5c' }}
             >
-              <span className="font-mono text-[10px] shrink-0" style={{ color: '#64748b', width: 20 }}>
-                {char.name.split(' ').map(w => w[0]).join('')}
-              </span>
-              <span className="text-[11px] truncate">{char.name}</span>
-              <span className="text-[10px] ml-auto shrink-0 truncate" style={{ color: '#64748b', maxWidth: 100 }}>
-                {locationName(char.current_location)}
-              </span>
-            </div>
-          ))}
-        </div>
+              <span style={{ fontSize: 9, transition: 'transform 0.2s', transform: homeExpanded ? 'rotate(90deg)' : 'rotate(0deg)', display: 'inline-block' }}>▸</span>
+              <span className="text-[10px]">{atHome.length} at home</span>
+            </button>
+            {homeExpanded && (
+              <div className="space-y-0.5 animate-fade-in-up">
+                {atHome.map((char) => (
+                  <div
+                    key={char.id}
+                    onClick={() => onSelectCharacter(char.id)}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer transition-all"
+                    style={{ border: '1px solid transparent' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.04)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' }}
+                  >
+                    <div
+                      className="shrink-0 flex items-center justify-center rounded-lg font-bold"
+                      style={{ width: 30, height: 30, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', color: '#3d3c5c', fontSize: 10 }}
+                    >
+                      {char.name.split(' ').map(w => w[0]).join('')}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[11px] block truncate" style={{ color: '#4a4970' }}>{char.name}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    )
-  }
+    </div>
+  )
+}
 
-  const initials = selected.name.split(' ').map(w => w[0]).join('')
+/* ── Selected Character Detail View ── */
+function SelectedCharacterView({ char, characters, locationName, onSelectCharacter }) {
+  const isManual = char.type === 'manual'
+  const initials = char.name.split(' ').map(w => w[0]).join('')
+
+  // For manual characters: show diary. For NPCs: show about inline
+  const charIds = new Set(characters.map(c => c.id))
+  const navigable = (char.relationships ?? []).filter(r => charIds.has(r.character_id))
+  const external = (char.relationships ?? []).filter(r => !charIds.has(r.character_id))
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="font-bold text-xs uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.12em' }}>
-          CHARACTER SPOTLIGHT
-        </h3>
-        <button
-          onClick={() => onSelectCharacter(null)}
-          className="font-mono text-[10px] transition-colors"
-          style={{ color: '#64748b', padding: '4px 8px', borderRadius: 6 }}
-          onMouseEnter={e => { e.currentTarget.style.color = '#f1f5f9'; e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
-          onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.background = 'transparent' }}
-        >
-          CLOSE
-        </button>
-      </div>
-
-      {/* Identity block */}
-      <div className="flex items-center gap-3 mb-3">
-        {/* Initials circle */}
+    <div className="flex-1 flex flex-col min-h-0 animate-fade-in-up">
+      {/* Identity */}
+      <div className="flex items-center gap-3 mb-4">
         <div
           className="shrink-0 flex items-center justify-center rounded-full font-bold"
           style={{
             width: 44, height: 44,
-            background: selected.type === 'manual' ? 'rgba(249,115,22,0.15)' : 'rgba(34,211,238,0.1)',
-            border: `2px solid ${selected.type === 'manual' ? 'rgba(249,115,22,0.35)' : 'rgba(34,211,238,0.25)'}`,
-            color: selected.type === 'manual' ? '#f97316' : '#22d3ee',
+            background: isManual ? 'rgba(249,115,22,0.12)' : 'rgba(34,211,238,0.08)',
+            border: `2px solid ${isManual ? 'rgba(249,115,22,0.3)' : 'rgba(34,211,238,0.2)'}`,
+            color: isManual ? '#f97316' : '#22d3ee',
             fontSize: 15,
           }}
         >
@@ -115,139 +252,100 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h4 className="font-bold text-base truncate" style={{ color: '#f1f5f9' }}>
-              {selected.name}
-            </h4>
-            {selected.type === 'manual' && (
-              <span className="font-mono px-1.5 py-0.5 rounded shrink-0" style={{ fontSize: 8, background: 'rgba(249,115,22,0.15)', color: '#f97316' }}>YOU</span>
+            <h4 className="font-bold text-base truncate" style={{ color: '#f1f5f9' }}>{char.name}</h4>
+            {isManual && (
+              <span className="font-mono text-[8px] px-1.5 py-0.5 rounded-md" style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316' }}>YOU</span>
             )}
           </div>
-          {/* Location badge */}
           <div className="flex items-center gap-1.5 mt-0.5">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <path d="M6 1C4.07 1 2.5 2.57 2.5 4.5C2.5 7.25 6 11 6 11s3.5-3.75 3.5-6.5C9.5 2.57 7.93 1 6 1z" stroke="#f97316" strokeWidth="1" fill="none" />
-              <circle cx="6" cy="4.5" r="1" fill="#f97316" />
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
+              <path d="M6 1C4.07 1 2.5 2.57 2.5 4.5C2.5 7.25 6 11 6 11s3.5-3.75 3.5-6.5C9.5 2.57 7.93 1 6 1z" stroke={isManual ? '#f97316' : '#22d3ee'} strokeWidth="1.2" fill="none" />
+              <circle cx="6" cy="4.5" r="1" fill={isManual ? '#f97316' : '#22d3ee'} />
             </svg>
-            <span className="font-mono text-[11px]" style={{ color: '#f97316' }}>
-              {locationName(selected.current_location)}
+            <span className="font-mono text-[10px]" style={{ color: isManual ? '#f97316' : '#22d3ee' }}>
+              {locationName(char.current_location)}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Tab toggle */}
-      <div className="flex gap-0 mb-3 rounded-lg overflow-hidden" style={{ border: '1px solid #2a2a4a' }}>
-        {['brief', 'diary'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className="flex-1 font-mono text-[11px] uppercase tracking-wider py-2 transition-all font-medium"
-            style={{
-              background: activeTab === tab ? 'rgba(249,115,22,0.15)' : 'transparent',
-              color: activeTab === tab ? '#f97316' : '#64748b',
-              borderRight: tab === 'brief' ? '1px solid #2a2a4a' : 'none',
-            }}
-            onMouseEnter={e => { if (activeTab !== tab) e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}
-            onMouseLeave={e => { if (activeTab !== tab) e.currentTarget.style.background = 'transparent' }}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {/* Content */}
+      {/* Content area */}
       <div className="flex-1 overflow-y-auto card-scroll space-y-3">
-        {activeTab === 'brief' ? (
+
+        {/* Manual character: show DIARY prominently, then brief info */}
+        {isManual ? (
           <>
-            {/* Soul summary — truncated to keep spotlight scannable */}
-            {selected.soul_summary && (
-              <div className="pb-3" style={{ borderBottom: '1px solid #2a2a4a' }}>
-                <span className="font-mono text-[10px] uppercase tracking-wider font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
-                  About
+            {/* Diary — the hero content for manual characters */}
+            {char.diary_entry && (
+              <div className="rounded-xl p-3.5" style={{ background: 'rgba(249,115,22,0.04)', border: '1px solid rgba(249,115,22,0.1)' }}>
+                <span className="font-mono text-[9px] uppercase tracking-widest block mb-2" style={{ color: '#f97316', letterSpacing: '0.1em' }}>
+                  Diary
                 </span>
-                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8', display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                  {selected.soul_summary}
+                <p className="text-[12px] leading-[1.75] italic" style={{ color: '#cbd5e1', fontFamily: 'Georgia, "Times New Roman", serif' }}>
+                  {char.diary_entry}
                 </p>
               </div>
             )}
 
-            {/* Personality — also truncated */}
-            {selected.personality_summary && (
-              <div className="pb-3" style={{ borderBottom: '1px solid #2a2a4a' }}>
-                <span className="font-mono text-[10px] uppercase tracking-wider font-medium block mb-1.5" style={{ color: '#94a3b8' }}>
-                  Personality
-                </span>
-                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                  {selected.personality_summary}
+            {/* Brief info */}
+            {char.soul_summary && (
+              <div className="pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <span className="font-mono text-[9px] uppercase tracking-wider block mb-1.5" style={{ color: '#64748b' }}>About</span>
+                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8' }}>
+                  {char.soul_summary}
                 </p>
               </div>
             )}
-
-            {/* Relationships — only show navigable ones (characters in the loaded world) */}
-            {selected.relationships?.length > 0 && (() => {
-              const charIds = new Set(characters.map(c => c.id))
-              const navigable = selected.relationships.filter(r => charIds.has(r.character_id))
-              const external = selected.relationships.filter(r => !charIds.has(r.character_id))
-              if (!navigable.length && !external.length) return null
-              return (
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-wider font-medium block mb-2" style={{ color: '#94a3b8' }}>
-                  Relationships
-                </span>
-                <div className="flex flex-wrap gap-1.5">
-                  {navigable.map(r => (
-                    <button
-                      key={r.character_id}
-                      onClick={() => onSelectCharacter(r.character_id)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all text-[10px] cursor-pointer"
-                      style={{
-                        background: '#222240',
-                        border: '1px solid #2a2a4a',
-                        color: '#94a3b8',
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = '#22d3ee'; e.currentTarget.style.color = '#22d3ee' }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = '#2a2a4a'; e.currentTarget.style.color = '#94a3b8' }}
-                      title={r.dynamic}
-                    >
-                      <span style={{ color: '#22d3ee', fontSize: 8 }}>●</span>
-                      {r.name}
-                    </button>
-                  ))}
-                  {external.map(r => (
-                    <span
-                      key={r.character_id}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px]"
-                      style={{ color: '#64748b' }}
-                      title={r.dynamic}
-                    >
-                      <span style={{ fontSize: 8 }}>○</span>
-                      {r.name}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              )
-            })()}
           </>
         ) : (
-          /* Diary tab */
-          <div>
-            {selected.diary_entry ? (
-              <div style={{ borderLeft: '3px solid rgba(249,115,22,0.3)', paddingLeft: 14 }}>
-                <p className="text-[11px] leading-[1.7] italic" style={{ color: '#94a3b8' }}>
-                  {selected.diary_entry}
+          /* NPC: show about and personality inline, no tabs */
+          <>
+            {char.soul_summary && (
+              <div>
+                <span className="font-mono text-[9px] uppercase tracking-wider block mb-1.5" style={{ color: '#64748b' }}>About</span>
+                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8' }}>
+                  {char.soul_summary}
                 </p>
               </div>
-            ) : (
-              <div className="flex flex-col items-center gap-2 py-4">
-                <span className="text-[11px]" style={{ color: '#64748b' }}>
-                  No diary entry for this tick
-                </span>
-                <span className="text-[10px] font-mono" style={{ color: '#2a2a4a' }}>
-                  {selected.type === 'manual' ? 'Diary updates after world-clock advances' : 'Only manual characters have diary entries'}
-                </span>
+            )}
+            {char.personality_summary && (
+              <div className="pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+                <span className="font-mono text-[9px] uppercase tracking-wider block mb-1.5" style={{ color: '#64748b' }}>Personality</span>
+                <p className="text-[11px] leading-[1.6]" style={{ color: '#94a3b8' }}>
+                  {char.personality_summary}
+                </p>
               </div>
             )}
+          </>
+        )}
+
+        {/* Relationships */}
+        {(navigable.length > 0 || external.length > 0) && (
+          <div className="pt-2" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+            <span className="font-mono text-[9px] uppercase tracking-wider block mb-2" style={{ color: '#64748b' }}>
+              Connections
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {navigable.map(r => (
+                <button
+                  key={r.character_id}
+                  onClick={() => onSelectCharacter(r.character_id)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] cursor-pointer transition-all"
+                  style={{ background: 'rgba(34,211,238,0.06)', border: '1px solid rgba(34,211,238,0.15)', color: '#94a3b8' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#22d3ee'; e.currentTarget.style.color = '#22d3ee'; e.currentTarget.style.transform = 'scale(1.03)' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(34,211,238,0.15)'; e.currentTarget.style.color = '#94a3b8'; e.currentTarget.style.transform = 'scale(1)' }}
+                  title={r.dynamic}
+                >
+                  <span style={{ color: '#22d3ee', fontSize: 6 }}>●</span>
+                  {r.name}
+                </button>
+              ))}
+              {external.map(r => (
+                <span key={r.character_id} className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px]" style={{ color: '#5a5878', border: '1px solid rgba(100,116,139,0.08)', background: 'rgba(255,255,255,0.02)' }} title={r.dynamic}>
+                  <span style={{ fontSize: 6, opacity: 0.5 }}>○</span>{r.name}
+                </span>
+              ))}
+            </div>
           </div>
         )}
       </div>

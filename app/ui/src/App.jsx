@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useCurrentTick } from './hooks/useCurrentTick'
 import { useWorldData } from './hooks/useWorldData'
 import TimelineScrubber from './components/TimelineScrubber'
@@ -17,27 +17,36 @@ export default function App() {
 
   const [eventCreatorOpen, setEventCreatorOpen] = useState(false)
   const [selectedCharacter, setSelectedCharacter] = useState(null)
+  const [contentKey, setContentKey] = useState(0) // for crossfade on tick change
+  const prevTick = useRef(currentTick)
 
-  const locationName = (id) =>
-    world?.locations?.find(l => l.id === id)?.name ?? id
+  // Trigger crossfade animation when tick changes
+  useEffect(() => {
+    if (prevTick.current !== currentTick) {
+      setContentKey(k => k + 1)
+      prevTick.current = currentTick
+    }
+  }, [currentTick])
 
   if (loading) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#16152b' }}>
-        <span className="font-mono text-sm font-bold tracking-widest" style={{ color: '#f97316' }}>
-          BILLINGS WORLD
-        </span>
-        <div className="flex gap-1">
-          {Array.from({ length: 5 }, (_, i) => (
-            <div key={i} className="rounded-full animate-glow-pulse" style={{
-              width: 8, height: 8,
-              background: '#f97316',
-              animationDelay: `${i * 0.15}s`,
+      <div className="h-screen flex flex-col items-center justify-center gap-6" style={{ background: 'var(--bg-body)' }}>
+        <div className="animate-fade-in" style={{ animationDuration: '0.6s' }}>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="font-bold text-2xl" style={{ color: '#f97316' }}>◈</span>
+            <span className="font-bold text-xl tracking-wide" style={{ color: '#f1f5f9' }}>
+              BILLINGS WORLD
+            </span>
+          </div>
+          <div className="h-[2px] rounded-full overflow-hidden" style={{ background: '#1e1d38', width: 200 }}>
+            <div className="h-full rounded-full animate-glow-pulse" style={{
+              width: '60%',
+              background: 'linear-gradient(90deg, #f97316, #22d3ee)',
             }} />
-          ))}
+          </div>
         </div>
-        <span className="font-mono text-xs" style={{ color: '#64748b' }}>
-          Loading world data...
+        <span className="text-[11px] animate-fade-in" style={{ color: '#4a4970', animationDelay: '0.3s', animationFillMode: 'both' }}>
+          Billings, Montana
         </span>
       </div>
     )
@@ -45,18 +54,13 @@ export default function App() {
 
   if (error) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-4" style={{ background: '#16152b' }}>
-        <div className="flex items-center gap-2">
-          <span style={{ color: '#f87171', fontSize: 18 }}>&#9888;</span>
-          <span className="font-mono text-sm font-bold" style={{ color: '#f87171' }}>Connection Error</span>
-        </div>
-        <span className="font-mono text-xs text-center max-w-md" style={{ color: '#94a3b8' }}>{error}</span>
+      <div className="h-screen flex flex-col items-center justify-center gap-4" style={{ background: 'var(--bg-body)' }}>
+        <span className="text-sm font-bold" style={{ color: '#f87171' }}>Connection Error</span>
+        <span className="text-xs text-center max-w-md" style={{ color: '#94a3b8' }}>{error}</span>
         <button
           onClick={() => window.location.reload()}
-          className="font-mono text-xs font-bold px-5 py-2 rounded-lg transition-all mt-2"
-          style={{ background: '#f97316', color: '#fff', border: 'none' }}
-          onMouseEnter={e => e.currentTarget.style.background = '#fb923c'}
-          onMouseLeave={e => e.currentTarget.style.background = '#f97316'}
+          className="text-xs font-bold px-5 py-2 rounded-xl"
+          style={{ background: '#f97316', color: '#fff' }}
         >
           Retry
         </button>
@@ -64,271 +68,175 @@ export default function App() {
     )
   }
 
-  const eventCount = scene?.events?.length ?? 0
+  // Parse date/time from clock string for Scene Brief title
+  const clockTime = world?.clock?.match(/(\d{1,2}:\d{2})/)?.[1] ?? ''
+  const clockDate = world?.clock?.replace(/\s+at\s+\d{1,2}:\d{2}/, '') ?? ''
+
+  // Short punchy scene header format: "THURSDAY, MAR 26 · 09:00"
+  const sceneTimeLabel = (() => {
+    const m = world?.clock?.match(/(\w+), (\w+) (\d+), (\d+) at (\d{1,2}:\d{2})/)
+    if (!m) return world?.clock ?? ''
+    const [, day, month, date, , time] = m
+    return `${day.toUpperCase()}, ${month.slice(0, 3).toUpperCase()} ${date} · ${time}`
+  })()
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden" style={{ background: '#16152b' }}>
+    <div className="h-screen flex flex-col overflow-hidden" style={{ background: 'var(--bg-body)' }}>
 
-      {/* ── Header Bar ── */}
+      {/* ── Top progress indicator — shows position in timeline ── */}
+      {index?.ticks?.length > 1 && (() => {
+        const tickIdx = index.ticks.findIndex(t => t.timestamp === (currentTick ?? index.ticks[index.ticks.length - 1].timestamp))
+        const progress = tickIdx >= 0 ? ((tickIdx + 1) / index.ticks.length) * 100 : 100
+        return (
+          <div style={{ height: 2, background: 'var(--border-subtle)' }}>
+            <div style={{
+              height: '100%',
+              width: `${progress}%`,
+              background: 'linear-gradient(90deg, #f97316, #22d3ee)',
+              borderRadius: 1,
+              transition: 'width 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            }} />
+          </div>
+        )
+      })()}
+
+      {/* ── Header ── */}
       <header
-        className="shrink-0 flex items-center px-6 gap-8"
-        style={{ height: 56, borderBottom: '1px solid #2a2a4a', background: 'linear-gradient(180deg, #1a1a36 0%, #16152b 100%)' }}
+        className="shrink-0 flex items-center px-5 gap-6"
+        style={{ height: 52, borderBottom: '1px solid var(--border-subtle)' }}
       >
-        {/* Logo */}
-        <div className="flex items-center gap-2.5 shrink-0">
-          <span className="font-bold text-lg" style={{ color: '#f97316' }}>◈</span>
-          <span className="font-bold text-base tracking-wide" style={{ color: '#f1f5f9' }}>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="font-bold text-base" style={{ color: '#f97316' }}>◈</span>
+          <span className="font-bold text-sm tracking-wide" style={{ color: '#f1f5f9' }}>
             BILLINGS WORLD
           </span>
         </div>
 
-        {/* Nav tabs */}
-        <nav className="flex items-stretch h-full gap-1">
-          {[
-            { label: 'DASHBOARD', active: true },
-            { label: 'CHARACTERS', active: false, onClick: () => setSelectedCharacter(null) },
-            { label: 'EVENTS', active: false, onClick: () => setEventCreatorOpen(true) },
-          ].map(tab => (
-            <button
-              key={tab.label}
-              onClick={tab.onClick}
-              className="font-mono text-xs px-4 relative transition-colors"
+        {/* World clock — center, chip style */}
+        <div className="flex-1 flex items-center justify-center">
+          {world?.clock && (
+            <div
+              className="flex items-center gap-2.5 px-4 py-1.5 rounded-full"
               style={{
-                color: tab.active ? '#f1f5f9' : '#64748b',
-                letterSpacing: '0.05em',
+                background: 'rgba(34,211,238,0.05)',
+                border: '1px solid rgba(34,211,238,0.12)',
               }}
-              onMouseEnter={e => { if (!tab.active) e.currentTarget.style.color = '#94a3b8' }}
-              onMouseLeave={e => { if (!tab.active) e.currentTarget.style.color = '#64748b' }}
             >
-              {tab.label}
-              {tab.active && (
-                <div className="absolute bottom-0 left-3 right-3" style={{ height: 2, background: '#f97316', borderRadius: 1 }} />
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="flex-1" />
-
-        {/* Right side: new tick + clock */}
-        <div className="flex items-center gap-4">
-          {newTickAvailable && (
-            <button
-              onClick={() => { setNewTickAvailable(false); setTick(null) }}
-              className="font-mono text-xs px-3 py-1.5 rounded-lg animate-glow-pulse transition-colors"
-              style={{ background: 'rgba(249,115,22,0.15)', color: '#f97316', border: '1px solid rgba(249,115,22,0.3)' }}
-            >
-              NEW TICK
-            </button>
+              <span className="font-mono font-bold text-sm" style={{ color: '#22d3ee' }}>{clockTime}</span>
+              <span style={{ width: 1, height: 12, background: 'rgba(34,211,238,0.2)', display: 'inline-block' }} />
+              <span className="font-mono text-[11px]" style={{ color: '#64748b' }}>{sceneTimeLabel.split(' · ')[0]}</span>
+            </div>
           )}
-          <div className="flex items-center gap-3 font-mono text-xs" style={{ color: '#94a3b8' }}>
-            <span className="font-bold text-sm" style={{ color: '#f1f5f9' }}>
-              {world?.clock?.match(/(\d{1,2}:\d{2})/)?.[1] ?? '—'}
-            </span>
-            <span style={{ color: '#64748b' }}>
-              {world?.clock?.replace(/\s+at\s+\d{1,2}:\d{2}/, '').replace(/,\s*\d{4}/, '') ?? ''}
-            </span>
-          </div>
         </div>
+
+        {newTickAvailable && (
+          <button
+            onClick={() => { setNewTickAvailable(false); setTick(null) }}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg animate-glow-pulse"
+            style={{ background: 'rgba(249,115,22,0.12)', color: '#f97316', border: '1px solid rgba(249,115,22,0.25)' }}
+          >
+            NEW TICK AVAILABLE
+          </button>
+        )}
+
+        <button
+          onClick={() => setEventCreatorOpen(true)}
+          className="btn-shimmer text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-1.5"
+          style={{
+            color: '#fff',
+            boxShadow: '0 2px 12px rgba(249,115,22,0.3)',
+            border: '1px solid rgba(255,255,255,0.1)',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(249,115,22,0.4)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 12px rgba(249,115,22,0.3)' }}
+        >
+          <span style={{ fontSize: 15, lineHeight: 1, fontWeight: 300 }}>+</span>
+          New Event
+        </button>
       </header>
 
-      {/* ── Main Bento Grid ── */}
-      <div
-        className="flex-1 overflow-hidden p-4 gap-3"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '2fr 1.2fr 0.8fr',
-          gridTemplateRows: '1fr auto auto',
-        }}
-      >
-        {/* ── Map Card (spans 2 cols) ── */}
-        <div
-          className="dash-card relative overflow-hidden"
-          style={{ gridColumn: '1 / 3', gridRow: '1', padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none' }}
-        >
-          <MapPanel
-            world={world}
-            characters={characters}
-            selectedCharacter={selectedCharacter}
-            onSelectCharacter={setSelectedCharacter}
-            scene={scene}
-          />
-        </div>
+      {/* ── Main Layout: 2 columns ── */}
+      <div className="flex-1 flex overflow-hidden p-3 gap-3">
 
-        {/* ── Timeline (separate row, spans 2 cols under map) ── */}
-        <div
-          style={{
-            gridColumn: '1 / 3', gridRow: '2',
-            background: 'linear-gradient(145deg, #1f1f3a 0%, #1a1a34 100%)',
-            borderRadius: '0 0 16px 16px',
-            marginTop: -1,
-            border: '1px solid #2a2a4a',
-            borderTop: '1px solid rgba(42,42,74,0.3)',
-            position: 'relative',
-            zIndex: 5,
-          }}
-        >
-          <TimelineScrubber
-            index={index}
-            currentTick={currentTick}
-            onSelectTick={setTick}
-          />
-        </div>
+        {/* ── LEFT COLUMN: Map + Timeline + Scene ── */}
+        <div className="flex-1 flex flex-col gap-3 min-w-0">
 
-        {/* ── Character Spotlight (right col, row 1) ── */}
-        <div className="dash-card overflow-hidden flex flex-col" style={{ gridColumn: '3', gridRow: '1 / 3' }}>
-          <CharacterPanel
-            characters={characters}
-            world={world}
-            selectedCharacter={selectedCharacter}
-            onSelectCharacter={setSelectedCharacter}
-          />
-        </div>
-
-        {/* ── Scene Brief (bottom-left) ── */}
-        <div className="dash-card overflow-hidden flex flex-col" style={{ gridColumn: '1', gridRow: '3', maxHeight: 260, padding: '16px 20px' }}>
-          <div className="flex items-center gap-2 mb-3">
-            <div style={{ width: 3, height: 14, background: '#f97316', borderRadius: 2 }} />
-            <h3 className="font-bold text-xs uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.12em' }}>
-              SCENE BRIEF
-            </h3>
-          </div>
-          <div className="flex-1 overflow-y-auto card-scroll scroll-fade">
-            <ScenePanel scene={scene} />
-          </div>
-        </div>
-
-        {/* ── Character Roster (bottom-center) ── */}
-        <div className="dash-card overflow-hidden flex flex-col" style={{ gridColumn: '2', gridRow: '3', maxHeight: 260, padding: '16px 20px' }}>
-          <div className="flex items-center gap-2 mb-3">
-            <div style={{ width: 3, height: 14, background: '#22d3ee', borderRadius: 2 }} />
-            <h3 className="font-bold text-xs uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.12em' }}>
-              ROSTER
-            </h3>
-            <span className="font-mono text-[9px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(34,211,238,0.1)', color: '#22d3ee' }}>
-              {characters.length}
-            </span>
-          </div>
-          <div className="flex-1 overflow-y-auto card-scroll">
-            <div className="space-y-1">
-              {[...characters].sort((a, b) => {
-                if (a.type === 'manual' && b.type !== 'manual') return -1
-                if (b.type === 'manual' && a.type !== 'manual') return 1
-                return 0
-              }).map(char => {
-                const isSelected = char.id === selectedCharacter
-                const isManual = char.type === 'manual'
-                return (
-                  <div
-                    key={char.id}
-                    onClick={() => setSelectedCharacter(char.id === selectedCharacter ? null : char.id)}
-                    className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg cursor-pointer transition-all"
-                    style={{
-                      background: isSelected ? 'rgba(249,115,22,0.1)' : 'transparent',
-                      border: `1px solid ${isSelected ? 'rgba(249,115,22,0.3)' : 'transparent'}`,
-                      borderLeft: isManual ? '2px solid rgba(249,115,22,0.5)' : undefined,
-                    }}
-                    onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = '#3d3d5c' } }}
-                    onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' } }}
-                  >
-                    {/* Initials */}
-                    <div
-                      className="shrink-0 flex items-center justify-center rounded-full font-bold"
-                      style={{
-                        width: 24, height: 24,
-                        background: isSelected ? 'rgba(249,115,22,0.2)' : isManual ? 'rgba(249,115,22,0.1)' : '#222240',
-                        color: isSelected || isManual ? '#f97316' : '#64748b',
-                        fontSize: 9,
-                      }}
-                    >
-                      {char.name.split(' ').map(w => w[0]).join('')}
-                    </div>
-                    <span className="text-[11px] font-medium truncate flex-1" style={{ color: isSelected ? '#f1f5f9' : '#94a3b8' }}>
-                      {char.name}
-                      {isManual && <span className="ml-1 font-mono" style={{ fontSize: 8, color: '#f97316' }}>★</span>}
-                    </span>
-                    <span className="text-[10px] shrink-0" style={{ color: '#64748b' }}>
-                      {locationName(char.current_location)}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* ── World Status (bottom-right) ── */}
-        <div className="dash-card flex flex-col" style={{ gridColumn: '3', gridRow: '3', maxHeight: 260, padding: '16px 20px' }}>
-          <div className="flex items-center gap-2 mb-3">
-            <div style={{ width: 3, height: 14, background: '#f97316', borderRadius: 2 }} />
-            <h3 className="font-bold text-xs uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.12em' }}>
-              WORLD STATUS
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 mb-3">
-            {/* Clock */}
-            <div className="rounded-lg px-3 py-2" style={{ background: '#222240' }}>
-              <span className="font-mono text-[9px] uppercase tracking-wider block mb-0.5" style={{ color: '#64748b' }}>
-                Clock
-              </span>
-              <span className="font-bold text-xl" style={{ color: '#f1f5f9' }}>
-                {world?.clock?.match(/(\d{1,2}:\d{2})/)?.[1] ?? '—'}
-              </span>
-            </div>
-
-            {/* Characters */}
-            <div className="rounded-lg px-3 py-2" style={{ background: '#222240' }}>
-              <span className="font-mono text-[9px] uppercase tracking-wider block mb-0.5" style={{ color: '#64748b' }}>
-                Characters
-              </span>
-              <span className="font-bold text-xl" style={{ color: '#22d3ee' }}>
-                {characters.length}
-              </span>
-            </div>
-
-            {/* Events */}
-            <div className="rounded-lg px-3 py-2" style={{ background: '#222240' }}>
-              <span className="font-mono text-[9px] uppercase tracking-wider block mb-0.5" style={{ color: '#64748b' }}>
-                Events
-              </span>
-              <span className="font-bold text-xl" style={{ color: '#f97316' }}>
-                {eventCount}
-              </span>
-            </div>
-
-            {/* Ticks */}
-            <div className="rounded-lg px-3 py-2" style={{ background: '#222240' }}>
-              <span className="font-mono text-[9px] uppercase tracking-wider block mb-0.5" style={{ color: '#64748b' }}>
-                Ticks
-              </span>
-              <span className="font-bold text-xl" style={{ color: '#94a3b8' }}>
-                {index?.ticks?.length ?? 0}
-              </span>
-            </div>
-          </div>
-
-          {/* New Event button — primary CTA */}
-          <button
-            onClick={() => setEventCreatorOpen(true)}
-            className="mt-auto w-full font-mono text-xs font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
-            style={{
-              background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-              color: '#fff',
-              border: 'none',
-              letterSpacing: '0.05em',
-              boxShadow: '0 4px 12px rgba(249,115,22,0.3)',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 6px 20px rgba(249,115,22,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)' }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(249,115,22,0.3)'; e.currentTarget.style.transform = 'translateY(0)' }}
+          {/* Map card */}
+          <div
+            className="dash-card relative overflow-hidden animate-card-enter stagger-1 flex-1"
+            style={{ padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none', minHeight: 0 }}
           >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.5" />
-              <line x1="7" y1="4" x2="7" y2="10" stroke="currentColor" strokeWidth="1.5" />
-              <line x1="4" y1="7" x2="10" y2="7" stroke="currentColor" strokeWidth="1.5" />
-            </svg>
-            NEW EVENT
-          </button>
+            <MapPanel
+              world={world}
+              characters={characters}
+              selectedCharacter={selectedCharacter}
+              onSelectCharacter={setSelectedCharacter}
+              scene={scene}
+            />
+          </div>
+
+          {/* Timeline bar */}
+          <div
+            className="animate-card-enter stagger-2"
+            style={{
+              background: 'linear-gradient(160deg, #1c1b38 0%, #18172e 100%)',
+              borderRadius: '0 0 var(--radius-card) var(--radius-card)',
+              marginTop: -14,
+              border: '1px solid var(--border-card)',
+              borderTop: '1px solid var(--border-subtle)',
+              position: 'relative',
+              zIndex: 5,
+            }}
+          >
+            <TimelineScrubber
+              index={index}
+              currentTick={currentTick}
+              onSelectTick={setTick}
+            />
+          </div>
+
+          {/* Scene Brief card */}
+          <div
+            className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-3"
+            style={{ maxHeight: 380, padding: '16px 20px' }}
+          >
+            {/* Scene header */}
+            <div className="flex items-center justify-between mb-4 shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div style={{ width: 3, height: 18, background: 'linear-gradient(180deg, #f97316 0%, #fb923c 100%)', borderRadius: 2, boxShadow: '0 0 8px rgba(249,115,22,0.4)' }} />
+                <div>
+                  <span className="font-bold text-[11px] uppercase tracking-widest block" style={{ color: '#f97316', letterSpacing: '0.12em' }}>
+                    Scene Brief
+                  </span>
+                  <span className="font-mono text-[13px] font-bold block leading-tight" style={{ color: '#f1f5f9' }}>
+                    {sceneTimeLabel}
+                  </span>
+                </div>
+              </div>
+              {(scene?.events?.length ?? 0) > 0 && (
+                <span className="font-mono text-[10px] px-2.5 py-1 rounded-lg" style={{ background: 'rgba(249,115,22,0.08)', color: '#f97316', border: '1px solid rgba(249,115,22,0.15)' }}>
+                  {scene.events.length} {scene.events.length === 1 ? 'event' : 'events'}
+                </span>
+              )}
+            </div>
+            <div key={contentKey} className="flex-1 overflow-y-auto card-scroll scroll-fade animate-crossfade">
+              <ScenePanel scene={scene} />
+            </div>
+          </div>
+        </div>
+
+        {/* ── RIGHT COLUMN: Characters ── */}
+        <div
+          className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-2"
+          style={{ width: 340, flexShrink: 0, padding: '20px' }}
+        >
+          <CharacterPanel
+            key={contentKey}
+            characters={characters}
+            world={world}
+            selectedCharacter={selectedCharacter}
+            onSelectCharacter={setSelectedCharacter}
+          />
         </div>
       </div>
 

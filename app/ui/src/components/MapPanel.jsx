@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from 'react'
 
-function MapPin({ x, y, label, selected, onSelect, svgRatio = 1 }) {
+function MapPin({ x, y, label, selected, isManual, onSelect, svgRatio = 1, inCluster = false }) {
   const [hovered, setHovered] = useState(false)
-  const r = selected ? 1.2 : 0.8
+  const r = selected ? 2.2 : isManual ? 1.8 : 1.5
   const rx = r / svgRatio
 
   return (
@@ -16,50 +16,73 @@ function MapPin({ x, y, label, selected, onSelect, svgRatio = 1 }) {
       {/* Hit area — generous for easy clicking */}
       <rect x={-5 / svgRatio} y={-5} width={10 / svgRatio} height={10} fill="transparent" />
 
-      {/* Pin circle */}
-      <circle
+      {/* Pin — ellipse to compensate for non-uniform SVG scaling */}
+      <ellipse
         cx={0} cy={0}
-        r={rx}
-        fill={selected ? '#22d3ee' : (hovered ? '#94a3b8' : '#64748b')}
-        stroke={selected ? '#22d3ee' : 'none'}
-        strokeWidth={selected ? 0.3 : 0}
+        rx={rx} ry={r}
+        fill={selected ? '#22d3ee' : isManual ? '#f97316' : (hovered ? '#cbd5e1' : '#8b8da8')}
+        stroke={selected ? '#22d3ee' : isManual ? '#f97316' : 'none'}
+        strokeWidth={selected ? 0.3 / svgRatio : isManual ? 0.2 / svgRatio : 0}
         style={{
-          filter: selected ? 'drop-shadow(0 0 3px rgba(34,211,238,0.6))' : undefined,
-          transition: 'all 0.15s ease',
+          filter: selected
+            ? 'drop-shadow(0 0 4px rgba(34,211,238,0.7))'
+            : isManual
+              ? 'drop-shadow(0 0 3px rgba(249,115,22,0.5))'
+              : hovered
+                ? 'drop-shadow(0 0 2px rgba(203,213,225,0.4))'
+                : undefined,
+          transition: 'all 0.2s ease',
         }}
       />
 
-      {/* Outer ring on selected */}
+      {/* Pulse ring on selected */}
       {selected && (
-        <circle
-          cx={0} cy={0}
-          r={rx * 2}
-          fill="none"
-          stroke="rgba(34,211,238,0.3)"
-          strokeWidth={0.15}
-        />
+        <>
+          <ellipse cx={0} cy={0} rx={rx * 2} ry={r * 2} fill="none" stroke="rgba(34,211,238,0.3)" strokeWidth={0.15 / svgRatio} />
+          <ellipse cx={0} cy={0} rx={rx * 1.5} ry={r * 1.5} fill="none" stroke="rgba(34,211,238,0.4)" strokeWidth={0.1 / svgRatio}>
+            <animate attributeName="rx" from={rx * 1.5} to={rx * 3} dur="2s" repeatCount="indefinite" />
+            <animate attributeName="ry" from={r * 1.5} to={r * 3} dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="0.5" to="0" dur="2s" repeatCount="indefinite" />
+          </ellipse>
+        </>
       )}
 
-      {/* Label */}
-      {(selected || hovered) && (
-        <text
-          x={rx + 0.8 / svgRatio}
-          y={0.4}
-          fill={selected ? '#22d3ee' : '#94a3b8'}
-          fontSize={1.1}
-          fontFamily="monospace"
-          fontWeight={selected ? 'bold' : 'normal'}
-          style={{ pointerEvents: 'none' }}
-        >
-          {label}
-        </text>
-      )}
+      {/* Label — first name always for solo pins, hover/selected only for clusters */}
+      {(selected || hovered || !inCluster) && (() => {
+        const firstName = label.split(' ')[0]
+        const displayName = (selected || hovered || isManual) ? label : firstName
+        const charCount = displayName.length
+        return (
+          <g style={{ pointerEvents: 'none' }}>
+            <rect
+              x={-Math.max(charCount * 0.32, 3) / svgRatio}
+              y={-r - 3.2}
+              width={Math.max(charCount * 0.65, 6) / svgRatio}
+              height={2}
+              rx={0.5}
+              fill={selected || hovered || isManual ? 'rgba(12,11,26,0.96)' : 'rgba(12,11,26,0.72)'}
+              stroke={selected ? 'rgba(34,211,238,0.4)' : isManual ? 'rgba(249,115,22,0.45)' : hovered ? 'rgba(148,163,184,0.25)' : 'rgba(100,116,139,0.15)'}
+              strokeWidth={0.15}
+            />
+            <text
+              x={0}
+              y={-r - 1.7}
+              fill={selected ? '#22d3ee' : isManual ? '#f97316' : hovered ? '#cbd5e1' : '#6b7a8d'}
+              fontSize={selected || hovered || isManual ? 0.95 : 0.82}
+              fontFamily="sans-serif"
+              fontWeight={selected || isManual ? 'bold' : 'normal'}
+              textAnchor="middle"
+            >
+              {displayName}
+            </text>
+          </g>
+        )
+      })()}
     </g>
   )
 }
 
 export default function MapPanel({ world, characters, selectedCharacter, onSelectCharacter, scene }) {
-  const [mapSVG, setMapSVG] = useState(null)
   const [svgRatio, setSvgRatio] = useState(1)
   const containerRef = useRef(null)
 
@@ -73,25 +96,22 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
     return () => obs.disconnect()
   }, [])
 
-  useEffect(() => {
-    fetch('/dist/assets/map.svg?v=' + Date.now())
-      .then(r => r.text())
-      .then(svg => {
-        const cleaned = svg
-          .replace(/\s+width="[^"]*"/, '')
-          .replace(/\s+height="[^"]*"/, '')
-          .replace('<svg ', '<svg preserveAspectRatio="none" ')
-        setMapSVG(cleaned)
-      })
-      .catch(() => setMapSVG(null))
-  }, [])
-
   const charsByLocation = {}
   for (const char of characters) {
     const loc = char.current_location
     if (!charsByLocation[loc]) charsByLocation[loc] = []
     charsByLocation[loc].push(char)
   }
+
+  // Time-of-day ambient color
+  const hour = parseInt(world?.clock?.match(/(\d{1,2}):\d{2}/)?.[1] ?? '12')
+  const isEvening = hour >= 18 || hour < 6
+  const isMorning = hour >= 6 && hour < 12
+  const ambientColor = isEvening
+    ? 'rgba(20,30,60,0.15)' // cool blue evening
+    : isMorning
+      ? 'rgba(60,40,20,0.06)' // warm morning
+      : 'rgba(40,35,20,0.04)' // subtle warm midday
 
   return (
     <div
@@ -100,52 +120,100 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
       style={{ background: '#12112a', borderRadius: 'var(--radius-card)' }}
       onClick={() => onSelectCharacter(null)}
     >
-      {/* SVG map background */}
-      {mapSVG ? (
-        <div
-          className="absolute inset-0 w-full h-full [&>svg]:w-full [&>svg]:h-full"
-          dangerouslySetInnerHTML={{ __html: mapSVG }}
-          style={{ opacity: 0.85 }}
-        />
-      ) : (
-        <div className="absolute inset-0 flex items-center justify-center font-mono text-xs" style={{ color: '#2a2a4a' }}>
-          MAP NOT FOUND
-        </div>
-      )}
-
-      {/* Vignette */}
-      <div
-        className="absolute inset-0 pointer-events-none"
+      {/* JPG map background */}
+      <img
+        src="/map.jpg"
+        alt=""
         style={{
-          background: 'radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(22,21,43,0.4) 100%)',
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover',
+          objectPosition: '50% 38%',
           borderRadius: 'var(--radius-card)',
+          opacity: 0.96,
         }}
       />
 
-      {/* Location badge — top-left */}
+      {/* Vignette + time-of-day ambient */}
       <div
-        className="absolute top-4 left-4 z-10 flex items-center gap-2 px-3 py-1.5 rounded-lg pointer-events-none"
-        style={{ background: 'rgba(30,30,56,0.8)', border: '1px solid #2a2a4a', backdropFilter: 'blur(4px)' }}
-      >
-        <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-          <path d="M6 1C4.07 1 2.5 2.57 2.5 4.5C2.5 7.25 6 11 6 11s3.5-3.75 3.5-6.5C9.5 2.57 7.93 1 6 1z" stroke="#f97316" strokeWidth="1.2" fill="none" />
-          <circle cx="6" cy="4.5" r="1" fill="#f97316" />
-        </svg>
-        <span className="font-mono text-[11px] font-medium" style={{ color: '#f1f5f9' }}>Billings, MT</span>
-        <span className="font-mono text-[10px]" style={{ color: '#64748b' }}>{characters.length} characters</span>
-      </div>
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `radial-gradient(ellipse at 50% 40%, ${ambientColor} 0%, rgba(22,21,43,0.12) 100%)`,
+          borderRadius: 'var(--radius-card)',
+          transition: 'background 0.5s ease',
+        }}
+      />
 
-      {/* Scene event summary — what's happening now */}
-      {scene?.events?.length > 0 && (
-        <div
-          className="absolute top-14 left-4 z-10 flex items-start gap-2 px-3 py-1.5 rounded-lg pointer-events-none"
-          style={{ background: 'rgba(30,30,56,0.7)', backdropFilter: 'blur(4px)', maxWidth: '45%', borderLeft: '2px solid rgba(249,115,22,0.5)' }}
-        >
-          <span className="text-[10px] leading-snug" style={{ color: '#94a3b8' }}>
-            {scene.events[0].length > 80 ? scene.events[0].substring(0, 80) + '...' : scene.events[0]}
-          </span>
-        </div>
-      )}
+      {/* Bottom fade — obscures illustrated map label artifacts */}
+      <div
+        className="absolute inset-x-0 bottom-0 pointer-events-none"
+        style={{
+          height: '28%',
+          background: 'linear-gradient(to top, rgba(18,17,31,0.88) 0%, rgba(18,17,31,0.45) 45%, rgba(18,17,31,0.10) 75%, transparent 100%)',
+          borderBottomLeftRadius: 'var(--radius-card)',
+          borderBottomRightRadius: 'var(--radius-card)',
+        }}
+      />
+
+      {/* Right-side fade — softens the refinery/east edge */}
+      <div
+        className="absolute inset-y-0 right-0 pointer-events-none"
+        style={{
+          width: '16%',
+          background: 'linear-gradient(to left, rgba(18,17,31,0.65) 0%, transparent 100%)',
+          borderTopRightRadius: 'var(--radius-card)',
+          borderBottomRightRadius: 'var(--radius-card)',
+        }}
+      />
+
+      {/* Top-right vignette — softens upper map label artifacts (railway Bance, 1st Ave N) */}
+      <div
+        className="absolute top-0 right-0 pointer-events-none"
+        style={{
+          width: '40%',
+          height: '22%',
+          background: 'radial-gradient(ellipse at 100% 0%, rgba(18,17,31,0.75) 0%, rgba(18,17,31,0.5) 25%, rgba(18,17,31,0.2) 55%, transparent 75%)',
+          borderTopRightRadius: 'var(--radius-card)',
+        }}
+      />
+
+      {/* Bottom-right corner vignette — aggressively targets the map label artifacts */}
+      <div
+        className="absolute bottom-0 right-0 pointer-events-none"
+        style={{
+          width: '42%',
+          height: '70%',
+          background: 'radial-gradient(ellipse at 100% 100%, rgba(18,17,31,0.99) 0%, rgba(18,17,31,0.95) 25%, rgba(18,17,31,0.75) 50%, rgba(18,17,31,0.35) 70%, transparent 88%)',
+          borderBottomRightRadius: 'var(--radius-card)',
+        }}
+      />
+
+      {/* Map overlay — world clock + active count (narrative framing, not a metric) */}
+      <div className="absolute top-4 right-4 z-10 pointer-events-none">
+        {(() => {
+          const active = characters.filter(c => {
+            const locName = world?.locations?.find(l => l.id === c.current_location)?.name ?? ''
+            return locName.toLowerCase() !== 'home'
+          }).length
+          const timeLabel = world?.clock?.match(/at (\d{1,2}:\d{2})/)?.[1] ?? ''
+          const dayLabel = world?.clock?.match(/(\w+),/)?.[1] ?? ''
+          return (
+            <div
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl"
+              style={{
+                background: 'rgba(18,17,31,0.72)',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(38,37,69,0.5)',
+              }}
+            >
+              <span style={{ width: 5, height: 5, borderRadius: 3, background: '#22d3ee', display: 'inline-block', boxShadow: '0 0 5px rgba(34,211,238,0.5)', flexShrink: 0 }} />
+              <span className="font-mono text-[10px]" style={{ color: '#64748b' }}>
+                {active} <span style={{ color: '#4a4970' }}>out in Billings</span>
+              </span>
+            </div>
+          )
+        })()}
+      </div>
 
       {/* Zoom controls removed — not functional yet */}
 
@@ -155,6 +223,32 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
       >
+        {/* Activity glow rings — one per occupied location */}
+        {world?.locations?.map(location => {
+          const chars = charsByLocation[location.id] ?? []
+          if (!chars.length) return null
+          const hasManual = chars.some(c => c.type === 'manual')
+          const glowR = hasManual ? 5.5 : 4.5
+          const glowColor = hasManual ? 'rgba(249,115,22,0.12)' : 'rgba(34,211,238,0.07)'
+          const ringColor = hasManual ? 'rgba(249,115,22,0.18)' : 'rgba(34,211,238,0.12)'
+          return (
+            <g key={`glow-${location.id}`} style={{ pointerEvents: 'none' }}>
+              <ellipse
+                cx={location.x} cy={location.y}
+                rx={glowR / svgRatio} ry={glowR}
+                fill={glowColor}
+              />
+              <ellipse
+                cx={location.x} cy={location.y}
+                rx={(glowR - 1.5) / svgRatio} ry={glowR - 1.5}
+                fill="none"
+                stroke={ringColor}
+                strokeWidth={0.15 / svgRatio}
+              />
+            </g>
+          )
+        })}
+
         {world?.locations?.map(location => {
           const chars = charsByLocation[location.id] ?? []
           if (!chars.length) return null
@@ -175,30 +269,45 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
                 y={location.y + offsetY}
                 label={char.name}
                 selected={char.id === selectedCharacter}
+                isManual={char.type === 'manual'}
                 onSelect={() => onSelectCharacter(char.id === selectedCharacter ? null : char.id)}
                 svgRatio={svgRatio}
+                inCluster={chars.length > 1}
               />
             )
           })
         })}
 
-        {/* Location cluster count badges — show when 3+ characters at one spot */}
+        {/* Location name pill for clustered locations */}
         {world?.locations?.map(location => {
           const chars = charsByLocation[location.id] ?? []
-          if (chars.length < 3) return null
+          if (chars.length < 2) return null
+          const name = location.name.length > 22 ? location.name.slice(0, 20) + '…' : location.name
+          const charCount = name.length
+          const pillW = Math.max(charCount * 0.55, 7) / svgRatio
+          const pillX = -pillW / 2
           return (
-            <g key={`count-${location.id}`} transform={`translate(${location.x}, ${location.y})`}>
-              <circle cx={-2.5 / svgRatio} cy={-2.5} r={1.5 / svgRatio} fill="rgba(249,115,22,0.9)" />
+            <g key={`loc-${location.id}`} style={{ pointerEvents: 'none' }}>
+              <rect
+                x={pillX}
+                y={location.y - 6.8}
+                width={pillW}
+                height={1.85}
+                rx={0.4}
+                fill="rgba(12,11,26,0.78)"
+                stroke="rgba(100,116,139,0.25)"
+                strokeWidth={0.12}
+              />
               <text
-                x={-2.5 / svgRatio} y={-2}
-                fill="#fff"
-                fontSize={1.2}
-                fontFamily="monospace"
-                fontWeight="bold"
+                x={location.x}
+                y={location.y - 5.32}
+                fill="rgba(148,163,184,0.7)"
+                fontSize={0.82}
+                fontFamily="sans-serif"
+                fontWeight="normal"
                 textAnchor="middle"
-                style={{ pointerEvents: 'none' }}
               >
-                {chars.length}
+                {name}
               </text>
             </g>
           )
