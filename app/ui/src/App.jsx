@@ -214,6 +214,10 @@ export default function App() {
               <MapPanel
                 world={world}
                 characters={characters}
+                mapConfig={mapConfig}
+                transitionPhase="idle"
+                prevCharacters={[]}
+                onSelectCharacter={setSelectedCharacter}
               />
             </div>
 
