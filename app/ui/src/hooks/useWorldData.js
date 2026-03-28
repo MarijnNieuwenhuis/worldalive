@@ -13,11 +13,13 @@ export function useWorldData(currentTick, setTick) {
   const [world, setWorld] = useState(null)
   const [characters, setCharacters] = useState([])
   const [scene, setScene] = useState(null)
+  const [mapConfig, setMapConfig] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [newTickAvailable, setNewTickAvailable] = useState(false)
 
   const lastModifiedRef = useRef(null)
+  const lastMapIdRef = useRef(null)
 
   const resolveActiveTick = useCallback((idx, tick) => {
     if (tick) return tick
@@ -39,7 +41,15 @@ export function useWorldData(currentTick, setTick) {
       allCharIds.map(id => fetchJSON(`${base}/characters/${id}.json`))
     )
 
-    return { worldData, sceneData, charData }
+    // Fetch map config only when it changes (or on first load)
+    const mapId = worldData.active_map ?? 'billings-central'
+    let mapCfg = null
+    if (mapId !== lastMapIdRef.current) {
+      mapCfg = await fetchJSON(`/dist/maps/${mapId}.json`)
+      lastMapIdRef.current = mapId
+    }
+
+    return { worldData, sceneData, charData, mapCfg }
   }, [])
 
   useEffect(() => {
@@ -56,11 +66,12 @@ export function useWorldData(currentTick, setTick) {
         const activeTick = resolveActiveTick(idx, currentTick)
         if (!activeTick) { setLoading(false); return }
 
-        const { worldData, sceneData, charData } = await loadTick(activeTick)
+        const { worldData, sceneData, charData, mapCfg } = await loadTick(activeTick)
         if (cancelled) return
         setWorld(worldData)
         setScene(sceneData)
         setCharacters(charData)
+        if (mapCfg) setMapConfig(mapCfg)
         setLoading(false)
       })
       .catch(err => {
@@ -85,10 +96,11 @@ export function useWorldData(currentTick, setTick) {
         if (isOnLatest) {
           const newLatest = idx.ticks[idx.ticks.length - 1]?.timestamp
           if (newLatest) {
-            const { worldData, sceneData, charData } = await loadTick(newLatest)
+            const { worldData, sceneData, charData, mapCfg } = await loadTick(newLatest)
             setWorld(worldData)
             setScene(sceneData)
             setCharacters(charData)
+            if (mapCfg) setMapConfig(mapCfg)
             setTick(newLatest)
           }
         } else {
@@ -102,5 +114,5 @@ export function useWorldData(currentTick, setTick) {
     return () => clearInterval(interval)
   }, [currentTick, index, loadTick, setTick])
 
-  return { index, world, characters, scene, loading, error, newTickAvailable, setNewTickAvailable }
+  return { index, world, characters, scene, mapConfig, loading, error, newTickAvailable, setNewTickAvailable }
 }

@@ -10,7 +10,7 @@ import CharacterPanel from './components/CharacterPanel'
 export default function App() {
   const { currentTick, setTick } = useCurrentTick()
   const {
-    index, world, characters, scene,
+    index, world, characters, scene, mapConfig,
     loading, error,
     newTickAvailable, setNewTickAvailable
   } = useWorldData(currentTick, setTick)
