@@ -161,10 +161,10 @@ export default function App() {
         {/* ── LEFT COLUMN: Map + Timeline + Scene ── */}
         <div className="flex-1 flex flex-col gap-3 min-w-0">
 
-          {/* Map card */}
+          {/* Map card — takes 3 flex parts (~60% of column height) */}
           <div
-            className="dash-card relative overflow-hidden animate-card-enter stagger-1 flex-1"
-            style={{ padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none', minHeight: 0 }}
+            className="dash-card relative overflow-hidden animate-card-enter stagger-1"
+            style={{ padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none', flex: '3 1 0', minHeight: 0 }}
           >
             <MapPanel
               world={world}
@@ -195,10 +195,10 @@ export default function App() {
             />
           </div>
 
-          {/* Scene Brief card */}
+          {/* Scene Brief card — takes 2 flex parts (~40% of column height) */}
           <div
             className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-3"
-            style={{ maxHeight: 380, padding: '16px 20px' }}
+            style={{ padding: '16px 20px', flex: '2 1 0', minHeight: 0 }}
           >
             {/* Scene header */}
             <div className="flex items-center justify-between mb-4 shrink-0">
