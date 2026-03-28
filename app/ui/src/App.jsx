@@ -19,6 +19,15 @@ export default function App() {
   const [selectedCharacter, setSelectedCharacter] = useState(null)
   const [contentKey, setContentKey] = useState(0) // for crossfade on tick change
   const prevTick = useRef(currentTick)
+  const [transitionPhase, setTransitionPhase] = useState('idle')
+  const prevCharactersRef = useRef([])
+
+  // Keep prevCharacters up to date while idle — frozen at transition start
+  useEffect(() => {
+    if (transitionPhase === 'idle' && !loading) {
+      prevCharactersRef.current = characters
+    }
+  }, [characters, transitionPhase, loading])
 
   // Map geometry calculation — map + scene brief sit side-by-side in the left column
   const mainRef = useRef(null)
@@ -53,12 +62,24 @@ export default function App() {
     return () => obs.disconnect()
   }, [loading])
 
-  // Trigger crossfade animation when tick changes
+  // 3-phase tick transition: idle → moving → settling → idle
   useEffect(() => {
-    if (prevTick.current !== currentTick) {
-      setContentKey(k => k + 1)
-      prevTick.current = currentTick
-    }
+    if (prevTick.current === currentTick) return
+
+    setTransitionPhase('moving')
+
+    const t1 = setTimeout(() => {
+      setContentKey(k => k + 1)   // panels update here, after map has moved
+      setTransitionPhase('settling')
+    }, 600)
+
+    const t2 = setTimeout(() => {
+      setTransitionPhase('idle')
+    }, 1000)
+
+    prevTick.current = currentTick
+
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [currentTick])
 
   if (loading) {
@@ -215,8 +236,8 @@ export default function App() {
                 world={world}
                 characters={characters}
                 mapConfig={mapConfig}
-                transitionPhase="idle"
-                prevCharacters={[]}
+                transitionPhase={transitionPhase}
+                prevCharacters={prevCharactersRef.current}
                 onSelectCharacter={setSelectedCharacter}
               />
             </div>
@@ -268,7 +289,11 @@ export default function App() {
                 </span>
               )}
             </div>
-            <div key={contentKey} className="flex-1 overflow-y-auto card-scroll scroll-fade animate-crossfade">
+            <div
+              key={contentKey}
+              className="flex-1 overflow-y-auto card-scroll scroll-fade animate-crossfade"
+              style={{ opacity: transitionPhase === 'moving' ? 0.5 : 1, transition: 'opacity 0.3s ease' }}
+            >
               <ScenePanel scene={scene} />
             </div>
           </div>
@@ -277,7 +302,11 @@ export default function App() {
         {/* ── RIGHT COLUMN: Characters ── */}
         <div
           className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-2"
-          style={{ width: 380, flexShrink: 0, padding: '20px' }}
+          style={{
+            width: 380, flexShrink: 0, padding: '20px',
+            opacity: transitionPhase === 'moving' ? 0.5 : 1,
+            transition: 'opacity 0.3s ease',
+          }}
         >
           <CharacterPanel
             key={contentKey}
