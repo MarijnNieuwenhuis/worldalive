@@ -149,68 +149,13 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         }}
       />
 
-      {/* Vignette + time-of-day ambient */}
+      {/* Time-of-day ambient overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: `radial-gradient(ellipse at 50% 40%, ${ambientColor} 0%, rgba(22,21,43,0.12) 100%)`,
+          background: `radial-gradient(ellipse at 50% 40%, ${ambientColor} 0%, rgba(22,21,43,0.08) 100%)`,
           borderRadius: 'var(--radius-card)',
           transition: 'background 0.5s ease',
-        }}
-      />
-
-      {/* Bottom fade — obscures illustrated map label artifacts */}
-      <div
-        className="absolute inset-x-0 bottom-0 pointer-events-none"
-        style={{
-          height: '28%',
-          background: 'linear-gradient(to top, rgba(18,17,31,0.88) 0%, rgba(18,17,31,0.45) 45%, rgba(18,17,31,0.10) 75%, transparent 100%)',
-          borderBottomLeftRadius: 'var(--radius-card)',
-          borderBottomRightRadius: 'var(--radius-card)',
-        }}
-      />
-
-      {/* Right-side fade — softens the refinery/east edge */}
-      <div
-        className="absolute inset-y-0 right-0 pointer-events-none"
-        style={{
-          width: '20%',
-          background: 'linear-gradient(to left, rgba(18,17,31,0.60) 0%, rgba(18,17,31,0.25) 40%, transparent 100%)',
-          borderTopRightRadius: 'var(--radius-card)',
-          borderBottomRightRadius: 'var(--radius-card)',
-        }}
-      />
-
-      {/* Top edge fade — subtle framing for the Yellowstone River zone */}
-      <div
-        className="absolute inset-x-0 top-0 pointer-events-none"
-        style={{
-          height: '18%',
-          background: 'linear-gradient(to bottom, rgba(18,17,31,0.55) 0%, rgba(18,17,31,0.20) 50%, transparent 100%)',
-          borderTopLeftRadius: 'var(--radius-card)',
-          borderTopRightRadius: 'var(--radius-card)',
-        }}
-      />
-
-      {/* Top-right corner vignette — frames the Refinery/east edge */}
-      <div
-        className="absolute top-0 right-0 pointer-events-none"
-        style={{
-          width: '45%',
-          height: '40%',
-          background: 'radial-gradient(ellipse at 100% 0%, rgba(18,17,31,0.72) 0%, rgba(18,17,31,0.40) 30%, rgba(18,17,31,0.12) 58%, transparent 78%)',
-          borderTopRightRadius: 'var(--radius-card)',
-        }}
-      />
-
-      {/* Bottom-right corner vignette — aggressively targets the map label artifacts */}
-      <div
-        className="absolute bottom-0 right-0 pointer-events-none"
-        style={{
-          width: '42%',
-          height: '70%',
-          background: 'radial-gradient(ellipse at 100% 100%, rgba(18,17,31,0.99) 0%, rgba(18,17,31,0.95) 25%, rgba(18,17,31,0.75) 50%, rgba(18,17,31,0.35) 70%, transparent 88%)',
-          borderBottomRightRadius: 'var(--radius-card)',
         }}
       />
 
