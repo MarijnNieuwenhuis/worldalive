@@ -1,5 +1,57 @@
 import { useState } from 'react'
 
+function TrailPath({ char, oldLoc, newLoc }) {
+  const isManual = char.type === 'manual'
+  const color = isManual ? '#f97316' : '#22d3ee'
+  const strokeW = isManual ? 2.5 : 2
+
+  // Convert 0-100 percent coords to SVG 1000×671 viewBox coords
+  const ox = oldLoc.x * 10
+  const oy = oldLoc.y * 6.71
+  const nx = newLoc.x * 10
+  const ny = newLoc.y * 6.71
+
+  // L-shaped path: move horizontally first, then vertically
+  const d = `M ${ox.toFixed(1)},${oy.toFixed(1)} L ${nx.toFixed(1)},${oy.toFixed(1)} L ${nx.toFixed(1)},${ny.toFixed(1)}`
+
+  // Path length estimate (Manhattan distance in SVG space)
+  const pathLen = Math.round(Math.abs(nx - ox) + Math.abs(ny - oy))
+  if (pathLen < 5) return null  // skip if barely moved
+
+  return (
+    <path
+      d={d}
+      fill="none"
+      stroke={color}
+      strokeWidth={strokeW}
+      strokeLinecap="round"
+      strokeDasharray={pathLen}
+      strokeDashoffset={pathLen}
+      style={{ filter: `drop-shadow(0 0 4px ${color}80)` }}
+    >
+      <animate
+        attributeName="stroke-dashoffset"
+        from={pathLen}
+        to={0}
+        dur="0.5s"
+        begin="0s"
+        fill="freeze"
+        calcMode="spline"
+        keySplines="0.16 1 0.3 1"
+        keyTimes="0;1"
+      />
+      <animate
+        attributeName="opacity"
+        from={1}
+        to={0}
+        dur="0.35s"
+        begin="0.5s"
+        fill="freeze"
+      />
+    </path>
+  )
+}
+
 function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived }) {
   const isManual = char.type === 'manual'
   const color = isManual ? '#f97316' : '#22d3ee'
@@ -160,11 +212,39 @@ export default function MapPanel({ world, characters, mapConfig, transitionPhase
           })
         )}
 
-        {/* Tick transition trails — added in Task 6 */}
+        {/* Tick transition trails — rendered during moving and settling phases */}
+        {transitionPhase !== 'idle' && (prevCharacters ?? []).map(prevChar => {
+          const currChar = characters.find(c => c.id === prevChar.id)
+          if (!currChar) return null
+          if (prevChar.current_location === currChar.current_location) return null
+
+          const oldLoc = world?.locations?.find(l => l.id === prevChar.current_location)
+          const newLoc = world?.locations?.find(l => l.id === currChar.current_location)
+          if (!oldLoc || !newLoc) return null
+
+          return (
+            <TrailPath
+              key={`trail-${prevChar.id}`}
+              char={prevChar}
+              oldLoc={oldLoc}
+              newLoc={newLoc}
+            />
+          )
+        })}
       </svg>
 
       {/* ── Layer 3: Character pins ── */}
       {(() => {
+        // Build set of character IDs that moved this tick
+        const movedIds = new Set(
+          (prevCharacters ?? [])
+            .filter(pc => {
+              const cc = characters.find(c => c.id === pc.id)
+              return cc && pc.current_location !== cc.current_location
+            })
+            .map(pc => pc.id)
+        )
+
         // Group characters by location to handle clustering
         const byLocation = {}
         characters.forEach(char => {
@@ -176,7 +256,6 @@ export default function MapPanel({ world, characters, mapConfig, transitionPhase
 
         return Object.values(byLocation).flatMap(({ loc, chars }) =>
           chars.map((char, idx) => {
-            // Spread multiple chars at same location horizontally
             const clusterOffset = chars.length > 1 ? (idx - (chars.length - 1) / 2) * 14 : 0
             const adjustedLoc = { ...loc, x: loc.x + (clusterOffset / 600) * 100 }
 
@@ -188,7 +267,7 @@ export default function MapPanel({ world, characters, mapConfig, transitionPhase
                 isHovered={hoveredPin === char.id}
                 onHover={(e) => e ? setHoveredPin(char.id) : setHoveredPin(null)}
                 onClick={() => onSelectCharacter(char.id)}
-                arrived={false}
+                arrived={transitionPhase === 'settling' && movedIds.has(char.id)}
               />
             )
           })
