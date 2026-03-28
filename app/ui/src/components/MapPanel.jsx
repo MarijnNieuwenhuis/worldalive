@@ -143,8 +143,7 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         style={{
           position: 'absolute', inset: 0,
           width: '100%', height: '100%',
-          objectFit: 'cover',
-          objectPosition: '50% 38%',
+          objectFit: 'fill',
           borderRadius: 'var(--radius-card)',
           opacity: 0.96,
         }}

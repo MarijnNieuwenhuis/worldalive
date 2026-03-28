@@ -20,6 +20,40 @@ export default function App() {
   const [contentKey, setContentKey] = useState(0) // for crossfade on tick change
   const prevTick = useRef(currentTick)
 
+  // Map geometry calculation — map drives layout, everything else fills remaining space
+  const mainRef = useRef(null)
+  const MAP_RATIO = 5056 / 3392          // image native aspect ratio
+  const CHAR_PANEL_W = 380
+  const TIMELINE_H = 65
+  const SCENE_MIN_H = 160
+  const [mapDims, setMapDims] = useState({ mapW: null, mapH: null, leftColW: null })
+
+  useEffect(() => {
+    // mainRef is only mounted after loading completes — re-run when loading changes
+    if (!mainRef.current) return
+    const recalc = () => {
+      const { width: W, height: H } = mainRef.current.getBoundingClientRect()
+      // W/H include the p-3 padding (12px each side) — subtract to get inner content area
+      const innerW = W - 24
+      const innerH = H - 24
+      const leftColW = innerW - CHAR_PANEL_W - 12  // subtract char panel + gap-3
+      const naturalH = leftColW / MAP_RATIO
+      const maxH = innerH - TIMELINE_H - SCENE_MIN_H - 12  // leave room for timeline + scene + gap
+      if (naturalH <= maxH) {
+        setMapDims({ mapW: leftColW, mapH: naturalH, leftColW })
+      } else {
+        // height-constrained: shrink map width to preserve full image
+        const mapH = maxH
+        const mapW = mapH * MAP_RATIO
+        setMapDims({ mapW, mapH, leftColW })
+      }
+    }
+    const obs = new ResizeObserver(recalc)
+    obs.observe(mainRef.current)
+    recalc()
+    return () => obs.disconnect()
+  }, [loading])
+
   // Trigger crossfade animation when tick changes
   useEffect(() => {
     if (prevTick.current !== currentTick) {
@@ -156,15 +190,21 @@ export default function App() {
       </header>
 
       {/* ── Main Layout: 2 columns ── */}
-      <div className="flex-1 flex overflow-hidden p-3 gap-3">
+      <div ref={mainRef} className="flex-1 flex overflow-hidden p-3 gap-3">
 
         {/* ── LEFT COLUMN: Map + Timeline + Scene ── */}
-        <div className="flex-1 flex flex-col gap-3 min-w-0">
+        <div className="flex flex-col gap-3" style={{ width: mapDims.leftColW ?? 'auto', flex: mapDims.leftColW ? '0 0 auto' : '1 1 0', minWidth: 0 }}>
 
-          {/* Map card — takes 3 flex parts (~60% of column height) */}
+          {/* Map card — full image at computed dimensions (falls back to aspect-ratio before JS measurement) */}
           <div
             className="dash-card relative overflow-hidden animate-card-enter stagger-1"
-            style={{ padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none', flex: '3 1 0', minHeight: 0 }}
+            style={{
+              padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none',
+              flexShrink: 0,
+              ...(mapDims.mapH
+                ? { width: mapDims.mapW, height: mapDims.mapH }
+                : { width: '100%', aspectRatio: '5056 / 3392' })
+            }}
           >
             <MapPanel
               world={world}
@@ -175,7 +215,7 @@ export default function App() {
             />
           </div>
 
-          {/* Timeline bar */}
+          {/* Timeline bar — matches map width */}
           <div
             className="animate-card-enter stagger-2"
             style={{
@@ -186,6 +226,8 @@ export default function App() {
               borderTop: '1px solid var(--border-subtle)',
               position: 'relative',
               zIndex: 5,
+              width: mapDims.mapW ?? '100%',
+              flexShrink: 0,
             }}
           >
             <TimelineScrubber
@@ -195,10 +237,10 @@ export default function App() {
             />
           </div>
 
-          {/* Scene Brief card — takes 2 flex parts (~40% of column height) */}
+          {/* Scene Brief card — fills remaining space below the map, always full left-col width */}
           <div
             className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-3"
-            style={{ padding: '16px 20px', flex: '2 1 0', minHeight: 0 }}
+            style={{ padding: '16px 20px', flex: '1 1 0', minHeight: 0, width: mapDims.leftColW ?? '100%' }}
           >
             {/* Scene header */}
             <div className="flex items-center justify-between mb-4 shrink-0">
