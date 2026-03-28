@@ -53,9 +53,6 @@ export default function ScenePanel({ scene }) {
       <div className="flex gap-0 pb-6" style={{ minHeight: 0 }}>
         {/* Left: Events */}
         <div className="space-y-2 shrink-0" style={{ width: 340, paddingRight: 24 }}>
-          <span className="font-mono text-[9px] uppercase tracking-widest block mb-3" style={{ color: 'rgba(249,115,22,0.5)', letterSpacing: '0.12em' }}>
-            Events
-          </span>
           {scene.events.map((evt, i) => (
             <EventCard key={i} evt={evt} i={i} />
           ))}
@@ -64,20 +61,17 @@ export default function ScenePanel({ scene }) {
         {/* Divider */}
         <div style={{ width: 1, background: 'rgba(100,116,139,0.12)', flexShrink: 0 }} />
 
-        {/* Right: Narrative prose — capped for readable line length */}
+        {/* Right: Narrative prose */}
         <div
           className="animate-fade-in-up"
           style={{
             paddingLeft: 24,
             flex: '1 1 0',
-            maxWidth: 720,
+            maxWidth: 900,
             animationDelay: `${scene.events.length * 0.08 + 0.1}s`,
             animationFillMode: 'both',
           }}
         >
-          <span className="font-mono text-[9px] uppercase tracking-widest block mb-3" style={{ color: 'rgba(100,116,139,0.4)', letterSpacing: '0.12em' }}>
-            Scene
-          </span>
           <p className="text-[13px] leading-[1.9]" style={{ color: '#b0bec8', fontFamily: 'Georgia, "Times New Roman", serif' }}>
             {scene.narrative}
           </p>

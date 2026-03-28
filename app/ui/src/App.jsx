@@ -228,7 +228,7 @@ export default function App() {
         {/* ── RIGHT COLUMN: Characters ── */}
         <div
           className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-2"
-          style={{ width: 340, flexShrink: 0, padding: '20px' }}
+          style={{ width: 380, flexShrink: 0, padding: '20px' }}
         >
           <CharacterPanel
             key={contentKey}

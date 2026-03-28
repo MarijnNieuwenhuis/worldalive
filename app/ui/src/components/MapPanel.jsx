@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 
-function MapPin({ x, y, label, selected, isManual, onSelect, svgRatio = 1, inCluster = false }) {
+function MapPin({ x, y, label, locationName, selected, isManual, onSelect, svgRatio = 1, inCluster = false }) {
   const [hovered, setHovered] = useState(false)
   const r = selected ? 2.2 : isManual ? 1.8 : 1.5
   const rx = r / svgRatio
@@ -52,13 +52,17 @@ function MapPin({ x, y, label, selected, isManual, onSelect, svgRatio = 1, inClu
         const firstName = label.split(' ')[0]
         const displayName = (selected || hovered || isManual) ? label : firstName
         const charCount = displayName.length
+        const showLocation = (selected || hovered) && locationName && !inCluster
+        const locText = locationName?.length > 20 ? locationName.slice(0, 18) + '…' : locationName
+        const locCount = locText?.length ?? 0
+        const pillH = showLocation ? 3.4 : 2
         return (
           <g style={{ pointerEvents: 'none' }}>
             <rect
-              x={-Math.max(charCount * 0.32, 3) / svgRatio}
+              x={-Math.max(Math.max(charCount, locCount) * 0.32, 3) / svgRatio}
               y={-r - 3.2}
-              width={Math.max(charCount * 0.65, 6) / svgRatio}
-              height={2}
+              width={Math.max(Math.max(charCount, locCount) * 0.65, 6) / svgRatio}
+              height={pillH}
               rx={0.5}
               fill={selected || hovered || isManual ? 'rgba(12,11,26,0.96)' : 'rgba(12,11,26,0.72)'}
               stroke={selected ? 'rgba(34,211,238,0.4)' : isManual ? 'rgba(249,115,22,0.45)' : hovered ? 'rgba(148,163,184,0.25)' : 'rgba(100,116,139,0.15)'}
@@ -75,6 +79,18 @@ function MapPin({ x, y, label, selected, isManual, onSelect, svgRatio = 1, inClu
             >
               {displayName}
             </text>
+            {showLocation && (
+              <text
+                x={0}
+                y={-r - 0.25}
+                fill={selected ? 'rgba(34,211,238,0.55)' : 'rgba(148,163,184,0.5)'}
+                fontSize={0.72}
+                fontFamily="sans-serif"
+                textAnchor="middle"
+              >
+                {locText}
+              </text>
+            )}
           </g>
         )
       })()}
@@ -155,24 +171,35 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
         }}
       />
 
-      {/* Right-side fade — softens the refinery/east edge */}
+      {/* Right-side fade — covers the diagonal AI label zone (STOCKHOLMEGADE etc.) */}
       <div
         className="absolute inset-y-0 right-0 pointer-events-none"
         style={{
-          width: '16%',
-          background: 'linear-gradient(to left, rgba(18,17,31,0.65) 0%, transparent 100%)',
+          width: '38%',
+          background: 'linear-gradient(to left, rgba(18,17,31,0.80) 0%, rgba(18,17,31,0.55) 25%, rgba(18,17,31,0.22) 58%, transparent 100%)',
           borderTopRightRadius: 'var(--radius-card)',
           borderBottomRightRadius: 'var(--radius-card)',
         }}
       />
 
-      {/* Top-right vignette — softens upper map label artifacts (railway Bance, 1st Ave N) */}
+      {/* Top fade — covers "1st Ave N" and top-edge AI label artifacts */}
+      <div
+        className="absolute inset-x-0 top-0 pointer-events-none"
+        style={{
+          height: '22%',
+          background: 'linear-gradient(to bottom, rgba(18,17,31,0.82) 0%, rgba(18,17,31,0.55) 30%, rgba(18,17,31,0.20) 65%, transparent 100%)',
+          borderTopLeftRadius: 'var(--radius-card)',
+          borderTopRightRadius: 'var(--radius-card)',
+        }}
+      />
+
+      {/* Top-right vignette — covers railway Bance, STRUS YLLE, diagonal AI label artifacts */}
       <div
         className="absolute top-0 right-0 pointer-events-none"
         style={{
-          width: '40%',
-          height: '22%',
-          background: 'radial-gradient(ellipse at 100% 0%, rgba(18,17,31,0.75) 0%, rgba(18,17,31,0.5) 25%, rgba(18,17,31,0.2) 55%, transparent 75%)',
+          width: '72%',
+          height: '55%',
+          background: 'radial-gradient(ellipse at 100% 0%, rgba(18,17,31,0.96) 0%, rgba(18,17,31,0.82) 15%, rgba(18,17,31,0.58) 32%, rgba(18,17,31,0.28) 52%, rgba(18,17,31,0.08) 68%, transparent 82%)',
           borderTopRightRadius: 'var(--radius-card)',
         }}
       />
@@ -268,6 +295,7 @@ export default function MapPanel({ world, characters, selectedCharacter, onSelec
                 x={location.x + offsetX}
                 y={location.y + offsetY}
                 label={char.name}
+                locationName={location.name}
                 selected={char.id === selectedCharacter}
                 isManual={char.type === 'manual'}
                 onSelect={() => onSelectCharacter(char.id === selectedCharacter ? null : char.id)}
