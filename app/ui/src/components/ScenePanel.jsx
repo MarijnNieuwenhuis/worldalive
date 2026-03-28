@@ -37,7 +37,7 @@ function EventCard({ evt, i }) {
   )
 }
 
-export default function ScenePanel({ scene }) {
+export default function ScenePanel({ scene, layout = 'auto' }) {
   if (!scene) return (
     <div className="flex flex-col items-center justify-center gap-2 py-8">
       <span className="text-xs" style={{ color: '#64748b' }}>No scene data available</span>
@@ -47,8 +47,11 @@ export default function ScenePanel({ scene }) {
   const hasEvents = scene.events?.length > 0
   const hasNarrative = !!scene.narrative
 
-  // Side-by-side layout: events column left, narrative column right
-  if (hasEvents && hasNarrative) {
+  // 'wide' layout: events column left, narrative right (used when container is wide enough)
+  // 'auto' or 'narrow': stack narrative on top, events below
+  const useWide = layout === 'wide'
+
+  if (hasEvents && hasNarrative && useWide) {
     return (
       <div className="flex gap-0 pb-6" style={{ minHeight: 0 }}>
         {/* Left: Events */}
@@ -80,28 +83,25 @@ export default function ScenePanel({ scene }) {
     )
   }
 
-  // Fallback: only events or only narrative
+  // Narrow / stacked layout: narrative first, events below
   return (
     <div className="space-y-3 pb-6">
-      {hasEvents && (
-        <div className="space-y-2">
-          {scene.events.map((evt, i) => <EventCard key={i} evt={evt} i={i} />)}
-        </div>
-      )}
       {hasNarrative && (
         <div
           className="animate-fade-in-up"
           style={{
-            borderLeft: '2px solid rgba(100,116,139,0.12)',
-            paddingLeft: 16,
-            maxWidth: 720,
-            animationDelay: `${(scene.events?.length ?? 0) * 0.08 + 0.1}s`,
+            animationDelay: '0.05s',
             animationFillMode: 'both',
           }}
         >
           <p className="text-[13px] leading-[1.85]" style={{ color: '#b0bec8', fontFamily: 'Georgia, "Times New Roman", serif' }}>
             {scene.narrative}
           </p>
+        </div>
+      )}
+      {hasEvents && (
+        <div className="space-y-2" style={{ marginTop: hasNarrative ? 12 : 0 }}>
+          {scene.events.map((evt, i) => <EventCard key={i} evt={evt} i={i} />)}
         </div>
       )}
     </div>

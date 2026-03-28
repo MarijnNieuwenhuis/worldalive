@@ -20,33 +20,32 @@ export default function App() {
   const [contentKey, setContentKey] = useState(0) // for crossfade on tick change
   const prevTick = useRef(currentTick)
 
-  // Map geometry calculation — map drives layout, everything else fills remaining space
+  // Map geometry calculation — map + scene brief sit side-by-side in the left column
   const mainRef = useRef(null)
-  const MAP_RATIO = 5056 / 3392          // image native aspect ratio
+  const MAP_RATIO = 5056 / 3392   // image native aspect ratio (≈ 1.491)
   const CHAR_PANEL_W = 380
-  const TIMELINE_H = 65
-  const SCENE_MIN_H = 160
+  const TIMELINE_NET_H = 51       // timeline height net of the -14px overlap with map
+  const SCENE_MIN_W = 380         // minimum scene brief width
   const [mapDims, setMapDims] = useState({ mapW: null, mapH: null, leftColW: null })
 
   useEffect(() => {
-    // mainRef is only mounted after loading completes — re-run when loading changes
+    // mainRef only exists after loading completes — re-run when loading changes
     if (!mainRef.current) return
     const recalc = () => {
       const { width: W, height: H } = mainRef.current.getBoundingClientRect()
-      // W/H include the p-3 padding (12px each side) — subtract to get inner content area
-      const innerW = W - 24
-      const innerH = H - 24
-      const leftColW = innerW - CHAR_PANEL_W - 12  // subtract char panel + gap-3
-      const naturalH = leftColW / MAP_RATIO
-      const maxH = innerH - TIMELINE_H - SCENE_MIN_H - 12  // leave room for timeline + scene + gap
-      if (naturalH <= maxH) {
-        setMapDims({ mapW: leftColW, mapH: naturalH, leftColW })
-      } else {
-        // height-constrained: shrink map width to preserve full image
-        const mapH = maxH
-        const mapW = mapH * MAP_RATIO
-        setMapDims({ mapW, mapH, leftColW })
+      const innerW = W - 24   // subtract p-3 horizontal padding (12px × 2)
+      const innerH = H - 24   // subtract p-3 vertical padding
+      const leftColW = innerW - CHAR_PANEL_W - 12  // subtract char panel + gap
+      // Scene brief always gets SCENE_MIN_W; map fills the rest
+      let mapW = leftColW - SCENE_MIN_W - 12
+      let mapH = mapW / MAP_RATIO
+      // Cap map height so it fits vertically (timeline sits below map)
+      const maxH = innerH - TIMELINE_NET_H
+      if (mapH > maxH) {
+        mapH = maxH
+        mapW = mapH * MAP_RATIO
       }
+      setMapDims({ mapW, mapH, leftColW })
     }
     const obs = new ResizeObserver(recalc)
     obs.observe(mainRef.current)
@@ -192,55 +191,62 @@ export default function App() {
       {/* ── Main Layout: 2 columns ── */}
       <div ref={mainRef} className="flex-1 flex overflow-hidden p-3 gap-3">
 
-        {/* ── LEFT COLUMN: Map + Timeline + Scene ── */}
-        <div className="flex flex-col gap-3" style={{ width: mapDims.leftColW ?? 'auto', flex: mapDims.leftColW ? '0 0 auto' : '1 1 0', minWidth: 0 }}>
+        {/* ── LEFT BLOCK: [map+timeline] side-by-side with [scene brief] ── */}
+        <div
+          className="flex gap-3"
+          style={{ flex: mapDims.leftColW ? '0 0 auto' : '1 1 0', width: mapDims.leftColW ?? 'auto', minWidth: 0 }}
+        >
 
-          {/* Map card — full image at computed dimensions (falls back to aspect-ratio before JS measurement) */}
-          <div
-            className="dash-card relative overflow-hidden animate-card-enter stagger-1"
-            style={{
-              padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none',
-              flexShrink: 0,
-              ...(mapDims.mapH
-                ? { width: mapDims.mapW, height: mapDims.mapH }
-                : { width: '100%', aspectRatio: '5056 / 3392' })
-            }}
-          >
-            <MapPanel
-              world={world}
-              characters={characters}
-              selectedCharacter={selectedCharacter}
-              onSelectCharacter={setSelectedCharacter}
-              scene={scene}
-            />
+          {/* Map + Timeline stacked vertically */}
+          <div className="flex flex-col" style={{ flexShrink: 0 }}>
+
+            {/* Map card */}
+            <div
+              className="dash-card relative overflow-hidden animate-card-enter stagger-1"
+              style={{
+                padding: 0, borderBottomLeftRadius: 0, borderBottomRightRadius: 0, borderBottom: 'none',
+                flexShrink: 0,
+                ...(mapDims.mapH
+                  ? { width: mapDims.mapW, height: mapDims.mapH }
+                  : { width: '100%', aspectRatio: '5056 / 3392' })
+              }}
+            >
+              <MapPanel
+                world={world}
+                characters={characters}
+                selectedCharacter={selectedCharacter}
+                onSelectCharacter={setSelectedCharacter}
+                scene={scene}
+              />
+            </div>
+
+            {/* Timeline bar — overlaps bottom of map by 14px */}
+            <div
+              className="animate-card-enter stagger-2"
+              style={{
+                background: 'linear-gradient(160deg, #1c1b38 0%, #18172e 100%)',
+                borderRadius: '0 0 var(--radius-card) var(--radius-card)',
+                marginTop: -14,
+                border: '1px solid var(--border-card)',
+                borderTop: '1px solid var(--border-subtle)',
+                position: 'relative',
+                zIndex: 5,
+                width: mapDims.mapW ?? '100%',
+                flexShrink: 0,
+              }}
+            >
+              <TimelineScrubber
+                index={index}
+                currentTick={currentTick}
+                onSelectTick={setTick}
+              />
+            </div>
           </div>
 
-          {/* Timeline bar — matches map width */}
-          <div
-            className="animate-card-enter stagger-2"
-            style={{
-              background: 'linear-gradient(160deg, #1c1b38 0%, #18172e 100%)',
-              borderRadius: '0 0 var(--radius-card) var(--radius-card)',
-              marginTop: -14,
-              border: '1px solid var(--border-card)',
-              borderTop: '1px solid var(--border-subtle)',
-              position: 'relative',
-              zIndex: 5,
-              width: mapDims.mapW ?? '100%',
-              flexShrink: 0,
-            }}
-          >
-            <TimelineScrubber
-              index={index}
-              currentTick={currentTick}
-              onSelectTick={setTick}
-            />
-          </div>
-
-          {/* Scene Brief card — fills remaining space below the map, always full left-col width */}
+          {/* Scene Brief — to the right of the map, fills remaining left-block width */}
           <div
             className="dash-card overflow-hidden flex flex-col animate-card-enter stagger-3"
-            style={{ padding: '16px 20px', flex: '1 1 0', minHeight: 0, width: mapDims.leftColW ?? '100%' }}
+            style={{ flex: '1 1 0', minWidth: 0, padding: '16px 20px' }}
           >
             {/* Scene header */}
             <div className="flex items-center justify-between mb-4 shrink-0">
