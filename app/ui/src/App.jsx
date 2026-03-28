@@ -214,9 +214,6 @@ export default function App() {
               <MapPanel
                 world={world}
                 characters={characters}
-                selectedCharacter={selectedCharacter}
-                onSelectCharacter={setSelectedCharacter}
-                scene={scene}
               />
             </div>
 
