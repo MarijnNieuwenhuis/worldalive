@@ -1,0 +1,11 @@
+{
+  "id": "billings-central",
+  "image": "/maps/billings-central.jpg",
+  "roads": [
+    { "id": "grand-ave",     "d": "M 0,268 L 1000,268" },
+    { "id": "central-ave",   "d": "M 0,415 L 1000,415" },
+    { "id": "27th-street",   "d": "M 420,0 L 420,671" },
+    { "id": "king-ave",      "d": "M 0,470 L 1000,470" },
+    { "id": "rimrock-drive", "d": "M 0,134 Q 400,115 720,161 Q 900,181 1000,201" }
+  ]
+}
