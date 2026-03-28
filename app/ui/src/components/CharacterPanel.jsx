@@ -9,9 +9,9 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
     world?.locations?.find(l => l.id === locationId)?.name ?? locationId
 
   return (
-    <div className="flex-1 flex flex-col min-h-0">
+    <>
       {/* Panel header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 shrink-0">
         <div className="flex items-center gap-2">
           <div style={{ width: 3, height: 14, background: '#22d3ee', borderRadius: 2 }} />
           <h3 className="font-bold text-xs uppercase tracking-widest" style={{ color: '#f1f5f9', letterSpacing: '0.1em' }}>
@@ -53,7 +53,7 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
           />
         )}
       </div>
-    </div>
+    </>
   )
 }
 
@@ -86,9 +86,7 @@ function CharacterListView({ manual, npcs, locationName, selectedCharacter, onSe
                 {char.name.split(' ').map(w => w[0]).join('')}
               </div>
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-bold" style={{ color: '#f1f5f9' }}>{char.name}</span>
-                </div>
+                <span className="text-sm font-bold block" style={{ color: '#f1f5f9' }}>{char.name}</span>
                 <span className="text-[10px]" style={{ color: '#94a3b8' }}>
                   {locationName(char.current_location)}
                 </span>

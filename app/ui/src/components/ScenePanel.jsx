@@ -65,9 +65,11 @@ export default function ScenePanel({ scene, layout = 'auto' }) {
         <div style={{ width: 1, background: 'rgba(100,116,139,0.12)', flexShrink: 0 }} />
 
         {/* Right: Narrative prose */}
-        <div
-          className="animate-fade-in-up"
+        <p
+          className="text-[13px] leading-[1.9] animate-fade-in-up"
           style={{
+            color: '#b0bec8',
+            fontFamily: 'Georgia, "Times New Roman", serif',
             paddingLeft: 24,
             flex: '1 1 0',
             maxWidth: 900,
@@ -75,10 +77,8 @@ export default function ScenePanel({ scene, layout = 'auto' }) {
             animationFillMode: 'both',
           }}
         >
-          <p className="text-[13px] leading-[1.9]" style={{ color: '#b0bec8', fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            {scene.narrative}
-          </p>
-        </div>
+          {scene.narrative}
+        </p>
       </div>
     )
   }
@@ -87,17 +87,12 @@ export default function ScenePanel({ scene, layout = 'auto' }) {
   return (
     <div className="space-y-3 pb-6">
       {hasNarrative && (
-        <div
-          className="animate-fade-in-up"
-          style={{
-            animationDelay: '0.05s',
-            animationFillMode: 'both',
-          }}
+        <p
+          className="text-[13px] leading-[1.85] animate-fade-in-up"
+          style={{ color: '#b0bec8', fontFamily: 'Georgia, "Times New Roman", serif', animationDelay: '0.05s', animationFillMode: 'both' }}
         >
-          <p className="text-[13px] leading-[1.85]" style={{ color: '#b0bec8', fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            {scene.narrative}
-          </p>
-        </div>
+          {scene.narrative}
+        </p>
       )}
       {hasEvents && (
         <div className="space-y-2" style={{ marginTop: hasNarrative ? 12 : 0 }}>
