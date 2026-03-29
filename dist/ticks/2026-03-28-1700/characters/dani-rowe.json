@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "dani-rowe",
+  "name": "Dani Rowe",
+  "type": "generated",
+  "current_location": "metra-park",
+  "health_status": "healthy",
+  "soul_summary": "Dani Rowe leads with her hands — when something is broken, she fixes it; when something needs doing, she does it. Competence is her language of love and her armor against doubt, and she would rather rebuild a carburetor in the dark than sit still and talk about how she's doing. Underneath that is something harder to name: she believes things she'd never say out loud — that an animal knows you better than most people will, that land has a kind of memory, that there's dignity in work that leaves marks on your hands. What she wants most, and protects most carefully, is to be taken at face value without having to earn it first. She has worked twice as hard in rooms that expected less from her, and she is tired of it in a way that has calcified into something that looks like confidence from the outside. It's not entirely confidence. It's refusal.",
+  "personality_summary": "Wary at first and not unfriendly — she watches before she talks, answers questions directly and asks practical ones back, not warming up but gathering information to decide if you're worth her time. Once she's decided she likes you there's a shift: small jokes, things told without being asked, a loyalty that would go to the mat for you without fanfare.",
+  "goals_summary": "Qualify for the Mountain States Rodeo Circuit before August — she came close last season and has been shaving fractions of seconds off her cloverleaf pattern for six months.",
+  "relationships": [
+    {
+      "character_id": "gary-rowe",
+      "name": "Gary Rowe",
+      "dynamic": "father — love that partly made her and that she also had to leave; warm but sideways, through information rather than feeling"
+    },
+    {
+      "character_id": "travis-munoz",
+      "name": "Travis Muñoz",
+      "dynamic": "coworker at Pratt's Auto — four years together, closest thing to a sibling in Billings"
+    }
+  ],
+  "diary_entry": ""
+}

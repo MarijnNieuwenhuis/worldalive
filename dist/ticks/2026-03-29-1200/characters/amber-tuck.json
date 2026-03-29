@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "amber-tuck",
+  "name": "Amber Tuck",
+  "type": "generated",
+  "current_location": "downtown",
+  "health_status": "healthy",
+  "soul_summary": "Amber Tuck built her life around a single discipline: seeing things clearly and saying what she sees — not brutally, but honestly, a habit she earned in graduate school where vagueness was a moral failure. She brought it back to Billings and applied it to everything: the slow death of a bad relationship, the economics of small retail, the particular loneliness of being the smartest person in a room that doesn't know or care. The bookstore is an extension of this; she believes books are how people think beyond themselves and stocks accordingly, philosophy shelved next to poetry next to history with no system, because disciplinary walls are a kind of laziness. Underneath the precision is something she hasn't quite solved — she left Billings at eighteen with a theory of herself that sustained her through a master's thesis and two years of doctoral work that went nowhere useful, and when she came back she told herself she'd outgrown the theory. The problem is she doesn't fully believe it, and she's too honest not to notice that. At forty she has made a kind of peace with not knowing — but it's the peace of someone who is still watching.",
+  "personality_summary": "She is direct but not aggressive, interested in everyone with genuine curiosity she can't turn off, and reads people quickly the way she reads an argument — looking for the premise, the logic, the thing actually being said — while being warm enough doing it that most people just feel seen. Less certain than she sounds: the sardonic surface came from years of learning that smart women who showed their uncertainty got it used against them, but at forty she's a little more willing to let uncertainty show.",
+  "goals_summary": "Keep the bookstore alive through events, a high school partnership, and possibly a small press imprint — an act of sustained will that she runs the numbers on every week and every week decides to continue.",
+  "relationships": [
+    {
+      "character_id": "jolene-voss",
+      "name": "Jolene Voss",
+      "dynamic": "recent acquaintance — first encounter on 2026-03-26"
+    },
+    {
+      "character_id": "walt-broussard",
+      "name": "Walt Broussard",
+      "dynamic": "regular customer and closest friend — Tuesday morning coffee, serious arguments about books"
+    },
+    {
+      "character_id": "nadia-pereira",
+      "name": "Nadia Pereira",
+      "dynamic": "former colleague from Chicago philosophy program — honest correspondence three or four times a year"
+    }
+  ],
+  "diary_entry": ""
+}

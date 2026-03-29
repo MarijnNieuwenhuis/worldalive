@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "jolene-voss",
+  "name": "Jolene Voss",
+  "type": "manual",
+  "current_location": "downtown-coffee-shop",
+  "health_status": "healthy",
+  "soul_summary": "Jolene's core is honesty — not as a personality trait but as a conviction she'd die on. She cannot pretend, not to others, not to herself, and she would give up comfort, relationships, and safety before she'd betray it. But she's not blunt: she cares how the truth lands, finds the right moment and the right words, tells hard things kindly because clarity is the point, not cruelty. Underneath that she doubts herself more than people realize, and the honesty is also the discipline she uses to keep herself accountable when her inner voice gets unreliable. She holds herself to the same standard she holds everyone else, maybe harder. She's still figuring out her worth — not broken, just honest enough to know she doesn't have it all sorted.",
+  "personality_summary": "In a room full of strangers, Jolene gravitates toward one person and has a real conversation rather than working the room — she has no interest in performing sociability and would rather actually connect than collect interactions. She's perceptive in a way that unnerves people slightly, remembering odd details weeks later and bringing them up as though it were obvious she'd been holding onto them.",
+  "goals_summary": "She wants to prove herself — at something, to someone, maybe mostly to herself — and to find her people, the place or group where she fully fits.",
+  "relationships": [
+    {
+      "character_id": "amber-tuck",
+      "name": "Amber Tuck",
+      "dynamic": "recent acquaintance — first encounter on 2026-03-26"
+    },
+    {
+      "character_id": "arleen",
+      "name": "Arleen",
+      "dynamic": "deceased closest friend — grief quiet and unresolved, still wears Arleen's necklace"
+    }
+  ],
+  "diary_entry": "I saw Megan Calloway at the coffee shop this morning. Megan Calloway. I haven’t thought about her in years and then there she was, older and thinner and wearing a ring I couldn’t stop looking at. She said she moved back in January, something about her mom. We talked for twenty minutes and I kept waiting for it to feel like something — like reconnection or nostalgia or anything — but mostly it felt like talking to a stranger who happened to know the names of people I used to know. I don’t think that’s sad. I think that’s just honest."
+}

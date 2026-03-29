@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "marcus-delaney",
+  "name": "Marcus Delaney",
+  "type": "generated",
+  "current_location": "downtown",
+  "health_status": "healthy",
+  "soul_summary": "Marcus is the kind of person who watches a situation long before he enters it — not from fear, not from calculation, but because he genuinely wants to understand what he's walking into before he commits. Once he commits, he's all the way in. There is a tiredness in him that doesn't come from the refinery: it comes from twenty-nine years of being slightly outside the frame, not in a dramatic visible way but in a minor key that runs underneath everything. He learned early to read a room fast — who's comfortable with him, who's performing comfort, who's decided something about him before he spoke — and does it so reflexively now that he barely registers it as work, which is its own kind of exhausting. What he doesn't let many people see: he is genuinely funny in a dry understated way, warm with people he trusts, and loyal in ways that are old-fashioned and almost embarrassing. He has been meaning to leave Billings for three years. Part of him suspects the staying is not inertia but something he hasn't named yet.",
+  "personality_summary": "Marcus enters most situations in observe mode — polite with warmth to it, reading the room before deciding how much of himself to bring in — and is genuinely curious about people, asking follow-up questions that show he was actually listening. At work he is calm and reliable in a way that has earned him respect without necessarily earning him closeness.",
+  "goals_summary": "Save enough to have real options — a specific exit number he's working toward methodically so that if he decides to leave he can do it without scrambling, and if he decides to stay it's because he chose to.",
+  "relationships": [
+    {
+      "character_id": "darius-delaney",
+      "name": "Darius Delaney",
+      "dynamic": "older brother in Atlanta — weekly calls, the person he's most completely himself with"
+    },
+    {
+      "character_id": "kevin-marsh",
+      "name": "Kevin Marsh",
+      "dynamic": "coworker and friend — two years eating lunch together, trust built from consistent decency"
+    },
+    {
+      "character_id": "renee-holloway",
+      "name": "Renee Holloway",
+      "dynamic": "former girlfriend, now in Denver — eight months in 2023-24, still occasional texts"
+    }
+  ],
+  "diary_entry": ""
+}

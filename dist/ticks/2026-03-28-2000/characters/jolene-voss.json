@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "jolene-voss",
+  "name": "Jolene Voss",
+  "type": "manual",
+  "current_location": "the-rail-bar",
+  "health_status": "healthy",
+  "soul_summary": "Jolene's core is honesty — not as a personality trait but as a conviction she'd die on. She cannot pretend, not to others, not to herself, and she would give up comfort, relationships, and safety before she'd betray it. But she's not blunt: she cares how the truth lands, finds the right moment and the right words, tells hard things kindly because clarity is the point, not cruelty. Underneath that she doubts herself more than people realize, and the honesty is also the discipline she uses to keep herself accountable when her inner voice gets unreliable. She holds herself to the same standard she holds everyone else, maybe harder. She's still figuring out her worth — not broken, just honest enough to know she doesn't have it all sorted.",
+  "personality_summary": "In a room full of strangers, Jolene gravitates toward one person and has a real conversation rather than working the room — she has no interest in performing sociability and would rather actually connect than collect interactions. She's perceptive in a way that unnerves people slightly, remembering odd details weeks later and bringing them up as though it were obvious she'd been holding onto them.",
+  "goals_summary": "She wants to prove herself — at something, to someone, maybe mostly to herself — and to find her people, the place or group where she fully fits.",
+  "relationships": [
+    {
+      "character_id": "amber-tuck",
+      "name": "Amber Tuck",
+      "dynamic": "recent acquaintance — first encounter on 2026-03-26"
+    },
+    {
+      "character_id": "arleen",
+      "name": "Arleen",
+      "dynamic": "deceased closest friend — grief quiet and unresolved, still wears Arleen's necklace"
+    }
+  ],
+  "diary_entry": "I went to the open mic at The Rail because I saw a flyer at the coffee shop and thought: why not. A guy named Eli read something — short, quiet, about a woman in a parking lot — and the room went still in that way that means someone just said the true thing. I don’t know him. But I recognized something in the way his hands were shaking when he sat down. That’s what it costs to be honest in front of people. I bought a beer I didn’t finish and walked home in the cold and felt, for the first time in a while, like I was in the right city."
+}

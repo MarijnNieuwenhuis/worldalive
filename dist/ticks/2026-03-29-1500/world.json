@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-03-29-1500",
+  "clock": "Sunday, March 29, 2026 at 15:00",
+  "locations": [
+    {
+      "id": "home",
+      "name": "Home",
+      "x": 16,
+      "y": 66
+    },
+    {
+      "id": "tucks-books",
+      "name": "Tuck's Books",
+      "x": 16,
+      "y": 24
+    },
+    {
+      "id": "the-rail-bar",
+      "name": "The Rail Bar",
+      "x": 49,
+      "y": 8
+    },
+    {
+      "id": "downtown-coffee-shop",
+      "name": "Downtown Coffee Shop",
+      "x": 42,
+      "y": 30
+    },
+    {
+      "id": "downtown",
+      "name": "Downtown",
+      "x": 40,
+      "y": 40
+    },
+    {
+      "id": "downtown-apartment",
+      "name": "Downtown Apartment",
+      "x": 38,
+      "y": 36
+    },
+    {
+      "id": "coles-ranch",
+      "name": "Cole's Ranch",
+      "x": 80,
+      "y": 68
+    },
+    {
+      "id": "heights-auto-repair",
+      "name": "Heights Auto & Repair",
+      "x": 70,
+      "y": 12
+    },
+    {
+      "id": "midtown-architecture-office",
+      "name": "Landscape Architecture Office",
+      "x": 36,
+      "y": 56
+    },
+    {
+      "id": "billings-senior-high",
+      "name": "Billings Senior High",
+      "x": 47,
+      "y": 52
+    },
+    {
+      "id": "midtown-outfitter-shop",
+      "name": "Midtown Outfitter Shop",
+      "x": 44,
+      "y": 62
+    },
+    {
+      "id": "west-end-residential-site",
+      "name": "West End Residential Site",
+      "x": 5,
+      "y": 67
+    },
+    {
+      "id": "chs-refinery",
+      "name": "CHS Refinery",
+      "x": 72,
+      "y": 26
+    },
+    {
+      "id": "the-heights-apartment",
+      "name": "The Heights Apartment",
+      "x": 73,
+      "y": 10
+    },
+    {
+      "id": "st-vincent-hospital",
+      "name": "St. Vincent Hospital",
+      "x": 18,
+      "y": 35
+    },
+    {
+      "id": "rimrocks-trailhead",
+      "name": "Rimrocks Trailhead",
+      "x": 55,
+      "y": 78
+    },
+    {
+      "id": "metra-park",
+      "name": "MetraPark Arena",
+      "x": 62,
+      "y": 42
+    },
+    {
+      "id": "yellowstone-river-access",
+      "name": "Yellowstone River Access",
+      "x": 30,
+      "y": 82
+    }
+  ],
+  "events": [
+    "Eli tells Travis about losing his apartment over coffee — Travis offers his spare room without hesitation, surprising them both",
+    "Someone proposes at the downtown coffee shop — the whole place applauds except Nora, who walked in for a late coffee and watched with an expression no one could read"
+  ],
+  "active_map": "billings-central"
+}

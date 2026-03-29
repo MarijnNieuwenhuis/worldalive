@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "ryan-ostrowski",
+  "name": "Ryan Ostrowski",
+  "type": "generated",
+  "current_location": "metra-park",
+  "health_status": "healthy",
+  "soul_summary": "Ryan Ostrowski shows up — that is the whole of it if you want to reduce him to something. He is at every practice, every game, every parent-teacher conference, every weekend visit. He was raised by a father who never said much but never missed a game, and somewhere early he absorbed that as the definition of love: not the declaration of it, but the presence of it. What he carries that no one sees is the weight of the student he lost three years ago — a quiet kid named Marcus who played safety and was gone before anyone understood what they were watching. Ryan has replayed every practice, every hallway conversation, and has made peace with it the way you make peace with something you will never fully make peace with: by turning it into purpose, a ferocious attention to the kids who seem like they're going somewhere no one should go. What he carries more slowly and quietly is the suspicion that showing up is not quite the same thing as being known.",
+  "personality_summary": "Easy to be around in the way that people who are genuinely paying attention are easy — he finds the person who looks like they don't know where to stand and goes and talks to them, asks good questions that show he was listening, makes people feel briefly that they have his full attention because they usually do. He is lonelier than he shows, more uncertain, and more tender about his kids than he ever says out loud.",
+  "goals_summary": "Be present for his kids this weekend — actually there, not half-watching his phone — and get three junior defensive players reading the field instead of reacting to it.",
+  "relationships": [
+    {
+      "character_id": "diane-ostrowski",
+      "name": "Diane Ostrowski",
+      "dynamic": "ex-wife — doing okay by the standards of divorced parents; respect without residual want"
+    },
+    {
+      "character_id": "cody-ostrowski",
+      "name": "Cody Ostrowski",
+      "dynamic": "son, age 9 — all surface and immediate, teaching him to throw a spiral as a way of standing next to him"
+    },
+    {
+      "character_id": "leah-ostrowski",
+      "name": "Leah Ostrowski",
+      "dynamic": "daughter, age 12 — smarter than Ryan and they both know it; has noticed the hat-brim tell"
+    },
+    {
+      "character_id": "dale-fitch",
+      "name": "Dale Fitch",
+      "dynamic": "assistant coach — eleven years, the kind of trust built from being next to someone in difficult moments"
+    },
+    {
+      "character_id": "devonte-harris",
+      "name": "Devonte Harris",
+      "dynamic": "former player, now 22 — sends a text a few times a year; Ryan thinks about him when thinking about why he's still coaching"
+    }
+  ],
+  "diary_entry": ""
+}

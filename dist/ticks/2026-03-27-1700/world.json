@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "timestamp": "2026-03-27-1700",
+  "clock": "Friday, March 27, 2026 at 17:00",
+  "locations": [
+    {
+      "id": "home",
+      "name": "Home",
+      "x": 16,
+      "y": 66
+    },
+    {
+      "id": "tucks-books",
+      "name": "Tuck's Books",
+      "x": 16,
+      "y": 24
+    },
+    {
+      "id": "the-rail-bar",
+      "name": "The Rail Bar",
+      "x": 49,
+      "y": 8
+    },
+    {
+      "id": "downtown-coffee-shop",
+      "name": "Downtown Coffee Shop",
+      "x": 42,
+      "y": 30
+    },
+    {
+      "id": "downtown",
+      "name": "Downtown",
+      "x": 40,
+      "y": 40
+    },
+    {
+      "id": "downtown-apartment",
+      "name": "Downtown Apartment",
+      "x": 38,
+      "y": 36
+    },
+    {
+      "id": "coles-ranch",
+      "name": "Cole's Ranch",
+      "x": 80,
+      "y": 68
+    },
+    {
+      "id": "heights-auto-repair",
+      "name": "Heights Auto & Repair",
+      "x": 70,
+      "y": 12
+    },
+    {
+      "id": "midtown-architecture-office",
+      "name": "Landscape Architecture Office",
+      "x": 36,
+      "y": 56
+    },
+    {
+      "id": "billings-senior-high",
+      "name": "Billings Senior High",
+      "x": 47,
+      "y": 52
+    },
+    {
+      "id": "midtown-outfitter-shop",
+      "name": "Midtown Outfitter Shop",
+      "x": 44,
+      "y": 62
+    },
+    {
+      "id": "west-end-residential-site",
+      "name": "West End Residential Site",
+      "x": 5,
+      "y": 67
+    },
+    {
+      "id": "chs-refinery",
+      "name": "CHS Refinery",
+      "x": 72,
+      "y": 26
+    },
+    {
+      "id": "the-heights-apartment",
+      "name": "The Heights Apartment",
+      "x": 73,
+      "y": 10
+    },
+    {
+      "id": "st-vincent-hospital",
+      "name": "St. Vincent Hospital",
+      "x": 18,
+      "y": 35
+    },
+    {
+      "id": "rimrocks-trailhead",
+      "name": "Rimrocks Trailhead",
+      "x": 55,
+      "y": 78
+    },
+    {
+      "id": "metra-park",
+      "name": "MetraPark Arena",
+      "x": 62,
+      "y": 42
+    },
+    {
+      "id": "yellowstone-river-access",
+      "name": "Yellowstone River Access",
+      "x": 30,
+      "y": 82
+    }
+  ],
+  "events": [
+    "Marcus gets into a heated argument with a shift supervisor at the refinery over a safety report he filed that was quietly shelved",
+    "A late-season snowstorm warning is issued for overnight — six to ten inches expected"
+  ],
+  "active_map": "billings-central"
+}

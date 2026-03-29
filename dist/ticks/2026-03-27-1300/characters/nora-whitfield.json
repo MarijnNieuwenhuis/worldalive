@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "nora-whitfield",
+  "name": "Nora Whitfield",
+  "type": "generated",
+  "current_location": "st-vincent-hospital",
+  "health_status": "healthy",
+  "soul_summary": "At her core, Nora Whitfield is a person who shows up — not heroically, not with fanfare, just appears when something needs doing and does it. When a situation requires someone to stay calm, her nervous system seems to understand this as a directive; she doesn't perform calm, she becomes it. She will not compromise on honesty with patients: she will soften delivery, find the right moment, choose careful words, but she will not let someone leave the ER with a false picture of what they're facing. What she carries is the accumulation of what the ER shows her — Montana statistics are not abstract to her, they have faces and ages and the particular silence of a family in a waiting room. She holds this with a practiced efficiency, the way you learn to carry a heavy bag by distributing the load just so. It's not sustainable and she knows it.",
+  "personality_summary": "Nora does not warm up to people quickly but she's not cold — she's evaluating, genuinely interested in people's specifics but taking time to decide how much of herself to offer in return. She is warmer than she presents, the tenderness coming out obliquely in remembered details and ten-minute stays nobody asked for, and funnier than most people expect, with a dry observational quality that comes from deciding long ago that the alternative to finding life darkly funny is finding it only dark.",
+  "goals_summary": "Get through the current scheduling stretch without going into the gray place, and complete the TNCC recertification she's been deferring.",
+  "relationships": [
+    {
+      "character_id": "marcus-whitfield",
+      "name": "Marcus Whitfield",
+      "dynamic": "ex-husband — civil divorce, functional faintly tender ambiguity neither has named"
+    },
+    {
+      "character_id": "dani-reyes",
+      "name": "Dani Reyes",
+      "dynamic": "coworker and closest friend — got close over six months of shared dark humor and one bad night"
+    }
+  ],
+  "diary_entry": ""
+}

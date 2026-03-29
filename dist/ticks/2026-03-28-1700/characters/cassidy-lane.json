@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "cassidy-lane",
+  "name": "Cassidy Lane",
+  "type": "generated",
+  "current_location": "metra-park",
+  "health_status": "healthy",
+  "soul_summary": "Cassidy's core is loyalty — not the easy kind but the kind that costs you: she would pick up the phone at 2am, lie for people she loves, hold a grudge for years on behalf of a friend who has already forgiven and moved on. Being someone people can count on is not a value she holds — it's who she is. Underneath the volume and the laugh that carries across a bar, she pays very close attention, cataloguing people and watching the room with the low-key vigilance of someone who grew up in a house where moods mattered and you learned to read the air. What she hasn't figured out yet is what she wants for herself — the positive picture is blurry, and she hasn't let herself look at it straight on, because wanting something clearly means you can fail to get it clearly, and she learned early that disappointment is easier to survive if you didn't let yourself hope too hard.",
+  "personality_summary": "She walks into a room and the room adjusts to her — she remembers your name the second time, your usual order the third time, and by the fifth time she knows something about your actual life, skipping small talk or converting it into something real inside two sentences. More thoughtful than she presents, she goes over conversations after the fact, worries about people she loves in a low-grade constant way, and carries guilt about specific things she doesn't talk about because she doesn't want to make her problems someone else's burden.",
+  "goals_summary": "Save enough to move out of her mom's place — not out of resentment but because she needs a door she can close.",
+  "relationships": [
+    {
+      "character_id": "linda-lane",
+      "name": "Linda Lane",
+      "dynamic": "mother and roommate — easy surface, growing unsaid pile underneath"
+    },
+    {
+      "character_id": "dani-kowalczyk",
+      "name": "Dani Kowalczyk",
+      "dynamic": "best friend since seventh grade — the person she'd call first in an emergency"
+    },
+    {
+      "character_id": "marcus-webb",
+      "name": "Marcus Webb",
+      "dynamic": "bar regular — consistent and trusted, tipped her forty dollars on a rough night"
+    }
+  ],
+  "diary_entry": ""
+}

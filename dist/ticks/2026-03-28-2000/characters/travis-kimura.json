@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "travis-kimura",
+  "name": "Travis Kimura",
+  "type": "generated",
+  "current_location": "yellowstone-river-access",
+  "health_status": "healthy",
+  "soul_summary": "Travis wants people to feel okay — not in a surface-level socially-trained way but genuinely, he does not like watching people struggle alone, does not like the silence that settles over a room when something's wrong and no one's saying it. He moves toward that. He learned young that he was good at it, and by the time he could have asked whether he wanted to keep doing it, it had already become who he was. The cost is that he's spent so long monitoring other people's comfort that his own has become something he forgets to check on — he'll go three weeks without noticing he's tired, stay two hours on a call with someone in crisis and feel afterward not resentful but hollowed out in a way he doesn't have a word for. The river is the exception: the Yellowstone doesn't need him to be anything, and standing in moving water is the one place he doesn't have to hold anything together.",
+  "personality_summary": "The kind of person who makes you feel you've been friends for a while five minutes into meeting him — he asks real questions, remembers what you said, picks up on the things you didn't quite say, and people walk away from conversations with him feeling heard without being able to say exactly what he did. Genuinely anxious underneath: the calm version he presents is the version that came out the other side of the process, real but costing something to produce.",
+  "goals_summary": "Have a good fishing season — knots sharp, hatch knowledge current, capacity to read clients quickly — and get through the winter gap at the outfitter shop without losing too much ground.",
+  "relationships": [
+    {
+      "character_id": "yuki-kimura",
+      "name": "Yuki Kimura",
+      "dynamic": "mother — love in the talking about other things; she gave him Japanese in pieces, words for the emotional register that has no English translation"
+    },
+    {
+      "character_id": "cody-brecht",
+      "name": "Cody Brecht",
+      "dynamic": "best friend since high school — genuinely restful company, no monitoring required"
+    },
+    {
+      "character_id": "dale-rourke",
+      "name": "Dale Rourke",
+      "dynamic": "repeat client and something more like a friend — let him further in than most after twenty days on the water"
+    }
+  ],
+  "diary_entry": ""
+}

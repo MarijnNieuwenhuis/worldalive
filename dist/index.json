@@ -1,34 +1,139 @@
 {
   "schema_version": 1,
-  "last_modified": "2026-03-27T00:00:00Z",
+  "last_modified": "2026-03-29T20:00:00Z",
   "ticks": [
     {
       "timestamp": "2026-03-26-0900",
-      "label": "Thursday, March 26 · 09:00",
-      "summary": "Thursday morning workday begins — characters disperse to their respective workplaces and homes, no significant intersections.",
+      "label": "Thursday, March 26 \u00b7 09:00",
+      "summary": "Thursday morning workday begins \u2014 characters disperse to their respective workplaces and homes, no significant intersections.",
       "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
       "active_characters": []
     },
     {
       "timestamp": "2026-03-26-1300",
-      "label": "Thursday, March 26 · 13:00",
-      "summary": "A water main break on 1st Ave N detours Jolene into Tuck's Books, where she meets Amber for the first time in an easy ten-minute exchange that stays with her longer than makes sense.",
+      "label": "Thursday, March 26 \u00b7 13:00",
+      "summary": "A water main break on 1st Ave N detours Jolene into Tuck\u2019s Books, where she meets Amber for the first time in an easy ten-minute exchange that stays with her longer than makes sense.",
       "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
       "active_characters": ["jolene-voss", "amber-tuck"]
     },
     {
       "timestamp": "2026-03-26-1700",
-      "label": "Thursday, March 26 · 17:00",
-      "summary": "Evening shift rotation begins — Cassidy opens The Rail, Marcus heads to the refinery — and Eli and Travis cross paths briefly downtown in their first acknowledged encounter.",
+      "label": "Thursday, March 26 \u00b7 17:00",
+      "summary": "Evening shift rotation begins \u2014 Cassidy opens The Rail, Marcus heads to the refinery \u2014 and Eli and Travis cross paths briefly downtown in their first acknowledged encounter.",
       "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
       "active_characters": ["eli-marsh", "travis-kimura"]
     },
     {
       "timestamp": "2026-03-26-2000",
-      "label": "Thursday, March 26 · 20:00",
-      "summary": "The city settles into its Thursday night rhythm — Cassidy works the bar, Marcus is deep in his shift at the refinery, Jolene reads the novel she bought today, Travis ties flies at the kitchen table.",
+      "label": "Thursday, March 26 \u00b7 20:00",
+      "summary": "The city settles into its Thursday night rhythm \u2014 Cassidy works the bar, Marcus is deep in his shift at the refinery, Jolene reads the novel she bought today, Travis ties flies at the kitchen table.",
       "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
       "active_characters": []
+    },
+    {
+      "timestamp": "2026-03-27-0900",
+      "label": "Friday, March 27 \u00b7 09:00",
+      "summary": "A burst pipe floods Tuck\u2019s Books; Jolene encounters a high school acquaintance at the coffee shop.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["jolene-voss", "amber-tuck"]
+    },
+    {
+      "timestamp": "2026-03-27-1300",
+      "label": "Friday, March 27 \u00b7 13:00",
+      "summary": "Travis helps Amber salvage flood-damaged books; high school basketball team makes state playoffs.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["amber-tuck", "travis-kimura", "ryan-ostrowski"]
+    },
+    {
+      "timestamp": "2026-03-27-1700",
+      "label": "Friday, March 27 \u00b7 17:00",
+      "summary": "Marcus confronts his supervisor over a buried safety report; late-season snowstorm warning issued.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["marcus-delaney", "cassidy-lane"]
+    },
+    {
+      "timestamp": "2026-03-27-2000",
+      "label": "Friday, March 27 \u00b7 20:00",
+      "summary": "Storm fills The Rail Bar; Cole comes in from the ranch; Eli befriends a trucker with stories.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["cassidy-lane", "cole-brandt", "eli-marsh"]
+    },
+    {
+      "timestamp": "2026-03-27-2300",
+      "label": "Friday, March 27 \u00b7 23:00",
+      "summary": "Power outage hits The Heights; Nora finishes a grueling double shift; the storm dumps eight inches.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["dani-rowe", "nora-whitfield", "marcus-delaney"]
+    },
+    {
+      "timestamp": "2026-03-28-0900",
+      "label": "Saturday, March 28 \u00b7 09:00",
+      "summary": "Post-storm morning: Cole discovers a stray dog at his ranch; I-90 accident detours traffic downtown.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["cole-brandt"]
+    },
+    {
+      "timestamp": "2026-03-28-1300",
+      "label": "Saturday, March 28 \u00b7 13:00",
+      "summary": "Jolene and Amber\u2019s second real conversation at the flooded bookstore; Eli learns he\u2019s losing his apartment.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["jolene-voss", "amber-tuck", "eli-marsh"]
+    },
+    {
+      "timestamp": "2026-03-28-1700",
+      "label": "Saturday, March 28 \u00b7 17:00",
+      "summary": "Basketball playoff game packs MetraPark; Petra learns her architecture project faces surprise client review.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["ryan-ostrowski", "cassidy-lane", "dani-rowe", "petra-szabo"]
+    },
+    {
+      "timestamp": "2026-03-28-2000",
+      "label": "Saturday, March 28 \u00b7 20:00",
+      "summary": "Eli reads at open mic night and the room responds; Travis has a transcendent evening on the Yellowstone.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["eli-marsh", "jolene-voss", "cassidy-lane", "travis-kimura"]
+    },
+    {
+      "timestamp": "2026-03-28-2300",
+      "label": "Saturday, March 28 \u00b7 23:00",
+      "summary": "Marcus files the safety report against his supervisor; Cole\u2019s stray dog inches closer to the house.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["marcus-delaney", "cole-brandt"]
+    },
+    {
+      "timestamp": "2026-03-29-0800",
+      "label": "Sunday, March 29 \u00b7 08:00",
+      "summary": "Mountain lion spotted near the Rimrocks, trail closed; Amber meets insurance adjuster at the bookstore.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["amber-tuck", "nora-whitfield"]
+    },
+    {
+      "timestamp": "2026-03-29-1200",
+      "label": "Sunday, March 29 \u00b7 12:00",
+      "summary": "Downtown development meeting draws a crowd and gets heated; Ryan and his kids explore the Rimrocks overlook.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["petra-szabo", "amber-tuck", "jolene-voss", "ryan-ostrowski"]
+    },
+    {
+      "timestamp": "2026-03-29-1500",
+      "label": "Sunday, March 29 \u00b7 15:00",
+      "summary": "Travis offers Eli his spare room; a public proposal at the coffee shop draws cheers and complicated feelings.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["eli-marsh", "travis-kimura", "nora-whitfield"]
+    },
+    {
+      "timestamp": "2026-03-29-1800",
+      "label": "Sunday, March 29 \u00b7 18:00",
+      "summary": "Cole\u2019s stray dog comes inside; Petra and Marcus share an accidental dinner at a new restaurant.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["cole-brandt", "petra-szabo", "marcus-delaney"]
+    },
+    {
+      "timestamp": "2026-03-29-2000",
+      "label": "Sunday, March 29 \u00b7 20:00",
+      "summary": "Jolene texts Amber about the novel; the weekend closes with threads open and a city settling into Sunday night.",
+      "all_characters": ["jolene-voss", "amber-tuck", "cassidy-lane", "cole-brandt", "dani-rowe", "eli-marsh", "marcus-delaney", "nora-whitfield", "petra-szabo", "ryan-ostrowski", "travis-kimura"],
+      "active_characters": ["jolene-voss", "amber-tuck"]
     }
   ]
 }

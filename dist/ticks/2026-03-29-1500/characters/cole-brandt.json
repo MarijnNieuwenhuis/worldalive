@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "id": "cole-brandt",
+  "name": "Cole Brandt",
+  "type": "generated",
+  "current_location": "coles-ranch",
+  "health_status": "healthy",
+  "soul_summary": "Cole Brandt believes at the most fundamental level that what you say and what you do should be the same thing — not as a worked-out philosophy but as a bedrock assumption he built himself on. He said he'd take care of the ranch, so he takes care of the ranch, whatever the season. The land is the other anchor: there's a logic to it, a way of reading weather and soil and animal behavior that he's spent thirty-four years learning and knows he's still a student of. Underneath the economy he keeps in his words and face is a man with strong reactions to things — injustice, small cruelties, beauty, people who are genuine — who was raised in a tradition where a man's feelings were his own business, and has maintained that tradition so long he's not sure he could undo it. He doesn't want to, most days. Some days he's less sure.",
+  "personality_summary": "Cole doesn't pursue social interaction but doesn't avoid it — he's present when he's in a room, makes eye contact, pays attention, but doesn't initiate, standing slightly outside a group not hostile but positioned like a man who isn't sure he was supposed to be there. One-on-one he's easier, and he will do things for people without being asked and without announcing it.",
+  "goals_summary": "Get through the season: keep the herd healthy, replace the failing hydraulic pump, and renegotiate the south pasture lease before it gets complicated.",
+  "relationships": [
+    {
+      "character_id": "denny-marsh",
+      "name": "Denny Marsh",
+      "dynamic": "hired hand — fifteen years working side by side, trust that runs bone-deep and has never been stated"
+    },
+    {
+      "character_id": "karen-brandt",
+      "name": "Karen Brandt",
+      "dynamic": "mother — Sunday evening calls, twelve to fifteen minutes, real version of the week"
+    },
+    {
+      "character_id": "robert-brandt",
+      "name": "Robert Brandt",
+      "dynamic": "father — conversation is the ranch; complete mutual respect at a certain distance"
+    },
+    {
+      "character_id": "hank-gilmore",
+      "name": "Hank Gilmore",
+      "dynamic": "drinking acquaintance — uncomplicated company at the bar when Cole is in town"
+    }
+  ],
+  "diary_entry": ""
+}
