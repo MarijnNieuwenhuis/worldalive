@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 
-const MOVE_SPEED = 35 // map units per second (0-100 coordinate space)
-const MAX_MOVE_DURATION = 2.8 // seconds — clamp so all arrive before phase ends
+const MOVE_SPEED = 18 // map units per second (0-100 coordinate space)
+const MAX_MOVE_DURATION = 5 // seconds — clamp so all arrive before phase ends
 
 function TrailPath({ char, oldLoc, newLoc, duration }) {
   const isManual = char.type === 'manual'
@@ -113,13 +113,15 @@ function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived, transit
       )}
 
       <div style={{
-        fontSize: 9, fontWeight: 700, fontFamily: 'monospace',
-        padding: '2px 6px', borderRadius: 5,
-        background: isManual ? 'rgba(249,115,22,0.15)' : 'rgba(34,211,238,0.08)',
-        border: `1px solid ${isManual ? 'rgba(249,115,22,0.35)' : 'rgba(34,211,238,0.2)'}`,
-        color,
+        fontSize: 11, fontWeight: 700, fontFamily: 'monospace',
+        padding: '3px 8px', borderRadius: 6,
+        background: isManual ? 'rgba(249,115,22,0.85)' : 'rgba(18,17,42,0.88)',
+        border: `1px solid ${isManual ? 'rgba(249,115,22,0.9)' : 'rgba(34,211,238,0.4)'}`,
+        color: isManual ? '#fff' : '#22d3ee',
         whiteSpace: 'nowrap', letterSpacing: '0.05em',
         pointerEvents: 'none',
+        backdropFilter: 'blur(4px)',
+        textShadow: '0 1px 2px rgba(0,0,0,0.5)',
       }}>
         {firstName}
       </div>

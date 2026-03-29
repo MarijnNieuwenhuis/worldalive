@@ -71,11 +71,11 @@ export default function App() {
     const t1 = setTimeout(() => {
       setContentKey(k => k + 1)   // panels update here, after all pins have moved
       setTransitionPhase('settling')
-    }, 3000)
+    }, 5500)
 
     const t2 = setTimeout(() => {
       setTransitionPhase('idle')
-    }, 3500)
+    }, 6000)
 
     prevTick.current = currentTick
 
