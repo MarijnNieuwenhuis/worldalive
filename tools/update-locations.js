@@ -17,7 +17,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const distDir = path.join(__dirname, '..', 'dist', 'ticks')
+// Default to billings-montana, override with --world flag
+const worldId = process.argv.find(a => a.startsWith('--world='))?.split('=')[1] ?? 'billings-montana'
+const distDir = path.join(__dirname, '..', 'dist', worldId, 'ticks')
 
 // Read input: file arg or stdin
 let input

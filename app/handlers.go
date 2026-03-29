@@ -24,7 +24,7 @@ func (h *handlers) postEvents(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dest := filepath.Join(h.distDir, "pending-events.json")
+	dest := filepath.Join(h.distDir, "billings-montana", "pending-events.json")
 	if err := os.WriteFile(dest, out, 0644); err != nil {
 		http.Error(w, "failed to write file", http.StatusInternalServerError)
 		return

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
 const POLL_INTERVAL_MS = 15000
+const WORLD_ID = 'billings-montana'
 
 async function fetchJSON(url) {
   const res = await fetch(url)
@@ -27,13 +28,13 @@ export function useWorldData(currentTick, setTick) {
   }, [])
 
   const loadTick = useCallback(async (timestamp) => {
-    const base = `/dist/ticks/${timestamp}`
+    const base = `/dist/${WORLD_ID}/ticks/${timestamp}`
     const [worldData, sceneData] = await Promise.all([
       fetchJSON(`${base}/world.json`),
       fetchJSON(`${base}/scenes/${timestamp}.json`),
     ])
 
-    const idx = await fetchJSON('/dist/index.json')
+    const idx = await fetchJSON(`/dist/${WORLD_ID}/index.json`)
     const tickMeta = idx.ticks.find(t => t.timestamp === timestamp)
     const allCharIds = tickMeta?.all_characters ?? []
 
@@ -45,7 +46,7 @@ export function useWorldData(currentTick, setTick) {
     const mapId = worldData.active_map ?? 'billings-central'
     let mapCfg = null
     if (mapId !== lastMapIdRef.current) {
-      mapCfg = await fetchJSON(`/dist/maps/${mapId}.json`)
+      mapCfg = await fetchJSON(`/dist/${WORLD_ID}/maps/${mapId}.json`)
       lastMapIdRef.current = mapId
     }
 
@@ -57,7 +58,7 @@ export function useWorldData(currentTick, setTick) {
     setLoading(true)
     setError(null)
 
-    fetchJSON('/dist/index.json')
+    fetchJSON(`/dist/${WORLD_ID}/index.json`)
       .then(async (idx) => {
         if (cancelled) return
         lastModifiedRef.current = idx.last_modified
@@ -84,7 +85,7 @@ export function useWorldData(currentTick, setTick) {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const idx = await fetchJSON('/dist/index.json')
+        const idx = await fetchJSON(`/dist/${WORLD_ID}/index.json`)
         if (idx.last_modified === lastModifiedRef.current) return
 
         lastModifiedRef.current = idx.last_modified
