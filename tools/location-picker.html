@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Location Picker — Billings World</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #12111f; color: #f1f5f9; font-family: system-ui, sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #262545; flex-shrink: 0; }
+  header h1 { font-size: 14px; font-weight: 700; letter-spacing: 0.06em; color: #f97316; }
+  header .actions { display: flex; gap: 8px; }
+  header button { padding: 6px 14px; border-radius: 8px; border: 1px solid #262545; background: #1a1932; color: #cbd5e1; font-size: 12px; cursor: pointer; font-weight: 600; }
+  header button:hover { background: #262545; color: #f1f5f9; }
+  header button.primary { background: #f97316; border-color: #f97316; color: #fff; }
+  header button.primary:hover { background: #fb923c; }
+
+  .main { display: flex; flex: 1; min-height: 0; }
+
+  .map-container { flex: 1; position: relative; overflow: hidden; cursor: crosshair; }
+  .map-container img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+  .pin { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: grab; z-index: 5; }
+  .pin:active { cursor: grabbing; }
+  .pin .dot { width: 10px; height: 10px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 8px rgba(34,211,238,0.6); }
+  .pin .label { font-size: 9px; font-weight: 700; font-family: monospace; padding: 2px 5px; border-radius: 4px; background: rgba(34,211,238,0.1); border: 1px solid rgba(34,211,238,0.25); color: #22d3ee; white-space: nowrap; pointer-events: none; }
+  .pin.selected .dot { background: #f97316; box-shadow: 0 0 12px rgba(249,115,22,0.8); }
+  .pin.selected .label { background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.4); color: #f97316; }
+
+  .sidebar { width: 320px; border-left: 1px solid #262545; display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; }
+  .sidebar h2 { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #64748b; padding: 12px 16px 8px; }
+  .location-list { flex: 1; overflow-y: auto; padding: 0 8px 8px; }
+  .location-item { display: flex; align-items: center; gap: 8px; padding: 8px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; margin-bottom: 2px; }
+  .location-item:hover { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.05); }
+  .location-item.selected { background: rgba(249,115,22,0.06); border-color: rgba(249,115,22,0.2); }
+  .location-item .name { font-size: 12px; font-weight: 600; flex: 1; }
+  .location-item .coords { font-size: 10px; font-family: monospace; color: #64748b; }
+  .location-item .unset { font-size: 10px; color: #4a4970; font-style: italic; }
+
+  .output-area { border-top: 1px solid #262545; padding: 12px 16px; flex-shrink: 0; }
+  .output-area h3 { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; margin-bottom: 6px; }
+  .output-area textarea { width: 100%; height: 80px; background: #0e0d1a; border: 1px solid #262545; border-radius: 8px; color: #22d3ee; font-family: monospace; font-size: 10px; padding: 8px; resize: none; }
+
+  .instructions { position: absolute; bottom: 16px; left: 16px; background: rgba(18,17,42,0.9); border: 1px solid #262545; border-radius: 10px; padding: 10px 14px; font-size: 11px; color: #94a3b8; backdrop-filter: blur(8px); max-width: 320px; z-index: 10; }
+  .instructions strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+<header>
+  <h1>LOCATION PICKER</h1>
+  <div class="actions">
+    <button onclick="loadFromFile()">Load Map Config</button>
+    <button onclick="loadWorldJson()">Load world.json</button>
+    <button class="primary" onclick="copyOutput()">Copy JSON</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="map-container" id="mapContainer">
+    <img id="mapImg" src="../app/ui/public/maps/billings-central.jpg" alt="Map" />
+    <div id="pins"></div>
+    <div class="instructions" id="instructions">
+      <strong>How to use:</strong> Click "Load world.json" to import locations from a tick file.
+      Select a location in the sidebar, then click the map to place it. Drag pins to adjust. Copy the JSON output when done.
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <h2>Locations</h2>
+    <div class="location-list" id="locationList"></div>
+    <div class="output-area">
+      <h3>Location Coordinates</h3>
+      <textarea id="output" readonly></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  locations: {},  // id → { name, x, y } or { name, x: null, y: null }
+  selected: null,
+  dragging: null,
+}
+
+// ── Map click → place selected location ──
+document.getElementById('mapContainer').addEventListener('click', (e) => {
+  if (state.dragging) return
+  if (!state.selected) return
+  const rect = document.getElementById('mapImg').getBoundingClientRect()
+  const x = Math.round(((e.clientX - rect.left) / rect.width) * 100)
+  const y = Math.round(((e.clientY - rect.top) / rect.height) * 100)
+  if (x < 0 || x > 100 || y < 0 || y > 100) return
+
+  state.locations[state.selected].x = x
+  state.locations[state.selected].y = y
+  render()
+})
+
+// ── Drag pins ──
+let dragOffset = { x: 0, y: 0 }
+
+function startDrag(e, id) {
+  e.stopPropagation()
+  state.dragging = id
+  state.selected = id
+  const pin = e.currentTarget
+  const rect = pin.getBoundingClientRect()
+  dragOffset.x = e.clientX - rect.left - rect.width / 2
+  dragOffset.y = e.clientY - rect.top - rect.height / 2
+  document.addEventListener('mousemove', onDrag)
+  document.addEventListener('mouseup', endDrag)
+  render()
+}
+
+function onDrag(e) {
+  if (!state.dragging) return
+  const imgRect = document.getElementById('mapImg').getBoundingClientRect()
+  const x = Math.round(((e.clientX - dragOffset.x - imgRect.left) / imgRect.width) * 100)
+  const y = Math.round(((e.clientY - dragOffset.y - imgRect.top) / imgRect.height) * 100)
+  state.locations[state.dragging].x = Math.max(0, Math.min(100, x))
+  state.locations[state.dragging].y = Math.max(0, Math.min(100, y))
+  render()
+}
+
+function endDrag() {
+  state.dragging = null
+  document.removeEventListener('mousemove', onDrag)
+  document.removeEventListener('mouseup', endDrag)
+}
+
+// ── Load from world.json ──
+function loadWorldJson() {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.json'
+  input.onchange = async (e) => {
+    const text = await e.target.files[0].text()
+    const data = JSON.parse(text)
+    if (data.locations) {
+      state.locations = {}
+      data.locations.forEach(loc => {
+        state.locations[loc.id] = {
+          name: loc.name,
+          x: loc.x ?? null,
+          y: loc.y ?? null,
+        }
+      })
+      document.getElementById('instructions').style.display = 'none'
+      render()
+    }
+  }
+  input.click()
+}
+
+// ── Load from map config ──
+function loadFromFile() {
+  const input = document.createElement('input')
+  input.type = 'file'
+  input.accept = '.json'
+  input.onchange = async (e) => {
+    const text = await e.target.files[0].text()
+    const data = JSON.parse(text)
+    // If it's a map config with locations
+    if (data.locations) {
+      state.locations = {}
+      Object.entries(data.locations).forEach(([id, loc]) => {
+        if (loc) state.locations[id] = { name: loc.label ?? id, x: loc.x ?? null, y: loc.y ?? null }
+      })
+      document.getElementById('instructions').style.display = 'none'
+      render()
+    }
+    // If it has an image path, try to use it
+    if (data.image) {
+      document.getElementById('mapImg').src = data.image
+    }
+  }
+  input.click()
+}
+
+// ── Copy output ──
+function copyOutput() {
+  const output = document.getElementById('output')
+  navigator.clipboard.writeText(output.value)
+  const btn = document.querySelector('.primary')
+  btn.textContent = 'Copied!'
+  setTimeout(() => { btn.textContent = 'Copy JSON' }, 1500)
+}
+
+// ── Select a location ──
+function selectLocation(id) {
+  state.selected = state.selected === id ? null : id
+  render()
+}
+
+// ── Render everything ──
+function render() {
+  const imgRect = document.getElementById('mapImg').getBoundingClientRect()
+
+  // Pins on map
+  const pinsContainer = document.getElementById('pins')
+  pinsContainer.innerHTML = ''
+  Object.entries(state.locations).forEach(([id, loc]) => {
+    if (loc.x == null || loc.y == null) return
+    const pin = document.createElement('div')
+    pin.className = `pin ${state.selected === id ? 'selected' : ''}`
+    pin.style.left = `${(loc.x / 100) * imgRect.width + imgRect.left - document.getElementById('mapContainer').getBoundingClientRect().left}px`
+    pin.style.top = `${(loc.y / 100) * imgRect.height + imgRect.top - document.getElementById('mapContainer').getBoundingClientRect().top}px`
+    pin.innerHTML = `<div class="label">${loc.name}</div><div class="dot"></div>`
+    pin.addEventListener('mousedown', (e) => startDrag(e, id))
+    pin.addEventListener('click', (e) => { e.stopPropagation(); selectLocation(id) })
+    pinsContainer.appendChild(pin)
+  })
+
+  // Sidebar list
+  const list = document.getElementById('locationList')
+  list.innerHTML = ''
+  Object.entries(state.locations).forEach(([id, loc]) => {
+    const item = document.createElement('div')
+    item.className = `location-item ${state.selected === id ? 'selected' : ''}`
+    item.onclick = () => selectLocation(id)
+    const hasCoords = loc.x != null && loc.y != null
+    item.innerHTML = `
+      <span class="name">${loc.name}</span>
+      ${hasCoords
+        ? `<span class="coords">${loc.x}, ${loc.y}</span>`
+        : `<span class="unset">click map to place</span>`}
+    `
+    list.appendChild(item)
+  })
+
+  // JSON output — format as world.json locations array
+  const locArray = Object.entries(state.locations).map(([id, loc]) => ({
+    id,
+    name: loc.name,
+    x: loc.x ?? 0,
+    y: loc.y ?? 0,
+  }))
+  document.getElementById('output').value = JSON.stringify(locArray, null, 2)
+}
+
+// Re-render on window resize (pin positions are pixel-based)
+window.addEventListener('resize', render)
+
+// Initial render
+render()
+</script>
+</body>
+</html>
