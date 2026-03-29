@@ -10,7 +10,7 @@
  * Or pipe directly:
  *   node tools/update-locations.js < locations.json
  *
- * This updates x/y coordinates in every dist/ticks/*/world.json file.
+ * This updates x/y coordinates in every tick's world.json file.
  * It only updates coordinates — it won't add or remove locations.
  */
 

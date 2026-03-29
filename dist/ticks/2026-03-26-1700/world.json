@@ -12,86 +12,86 @@
     {
       "id": "tucks-books",
       "name": "Tuck's Books",
-      "x": 16,
-      "y": 24
+      "x": 41,
+      "y": 59
     },
     {
       "id": "the-rail-bar",
       "name": "The Rail Bar",
-      "x": 49,
-      "y": 8
+      "x": 41,
+      "y": 75
     },
     {
       "id": "downtown-coffee-shop",
       "name": "Downtown Coffee Shop",
-      "x": 42,
-      "y": 30
+      "x": 53,
+      "y": 59
     },
     {
       "id": "downtown",
       "name": "Downtown",
-      "x": 40,
-      "y": 40
+      "x": 55,
+      "y": 74
     },
     {
       "id": "downtown-apartment",
       "name": "Downtown Apartment",
-      "x": 38,
-      "y": 36
+      "x": 59,
+      "y": 66
     },
     {
       "id": "coles-ranch",
       "name": "Cole's Ranch",
-      "x": 80,
-      "y": 68
+      "x": 58,
+      "y": 21
     },
     {
       "id": "heights-auto-repair",
       "name": "Heights Auto & Repair",
-      "x": 70,
-      "y": 12
+      "x": 66,
+      "y": 62
     },
     {
       "id": "midtown-architecture-office",
       "name": "Landscape Architecture Office",
-      "x": 36,
-      "y": 56
+      "x": 40,
+      "y": 29
     },
     {
       "id": "billings-senior-high",
       "name": "Billings Senior High",
-      "x": 47,
-      "y": 52
+      "x": 38,
+      "y": 42
     },
     {
       "id": "midtown-outfitter-shop",
       "name": "Midtown Outfitter Shop",
-      "x": 44,
-      "y": 62
+      "x": 40,
+      "y": 34
     },
     {
       "id": "west-end-residential-site",
       "name": "West End Residential Site",
-      "x": 5,
-      "y": 67
+      "x": 26,
+      "y": 49
     },
     {
       "id": "chs-refinery",
       "name": "CHS Refinery",
-      "x": 72,
-      "y": 26
+      "x": 82,
+      "y": 53
     },
     {
       "id": "the-heights-apartment",
       "name": "The Heights Apartment",
-      "x": 73,
-      "y": 10
+      "x": 54,
+      "y": 37
     },
     {
       "id": "st-vincent-hospital",
       "name": "St. Vincent Hospital",
-      "x": 18,
-      "y": 35
+      "x": 25,
+      "y": 38
     }
   ],
   "events": [
