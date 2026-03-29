@@ -69,13 +69,13 @@ export default function App() {
     setTransitionPhase('moving')
 
     const t1 = setTimeout(() => {
-      setContentKey(k => k + 1)   // panels update here, after map has moved
+      setContentKey(k => k + 1)   // panels update here, after all pins have moved
       setTransitionPhase('settling')
-    }, 600)
+    }, 3000)
 
     const t2 = setTimeout(() => {
       setTransitionPhase('idle')
-    }, 1000)
+    }, 3500)
 
     prevTick.current = currentTick
 

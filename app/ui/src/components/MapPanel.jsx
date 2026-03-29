@@ -1,22 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
-function TrailPath({ char, oldLoc, newLoc }) {
+const MOVE_SPEED = 35 // map units per second (0-100 coordinate space)
+const MAX_MOVE_DURATION = 2.8 // seconds — clamp so all arrive before phase ends
+
+function TrailPath({ char, oldLoc, newLoc, duration }) {
   const isManual = char.type === 'manual'
   const color = isManual ? '#f97316' : '#22d3ee'
   const strokeW = isManual ? 2.5 : 2
 
-  // Convert 0-100 percent coords to SVG 1000×671 viewBox coords
   const ox = oldLoc.x * 10
   const oy = oldLoc.y * 6.71
   const nx = newLoc.x * 10
   const ny = newLoc.y * 6.71
 
-  // L-shaped path: move horizontally first, then vertically
-  const d = `M ${ox.toFixed(1)},${oy.toFixed(1)} L ${nx.toFixed(1)},${oy.toFixed(1)} L ${nx.toFixed(1)},${ny.toFixed(1)}`
+  // Straight line from old to new
+  const d = `M ${ox.toFixed(1)},${oy.toFixed(1)} L ${nx.toFixed(1)},${ny.toFixed(1)}`
 
-  // Path length estimate (Manhattan distance in SVG space)
-  const pathLen = Math.round(Math.abs(nx - ox) + Math.abs(ny - oy))
-  if (pathLen < 5) return null  // skip if barely moved
+  const pathLen = Math.round(Math.sqrt((nx - ox) ** 2 + (ny - oy) ** 2))
+  if (pathLen < 5) return null
 
   return (
     <path
@@ -33,26 +34,26 @@ function TrailPath({ char, oldLoc, newLoc }) {
         attributeName="stroke-dashoffset"
         from={pathLen}
         to={0}
-        dur="0.5s"
+        dur={`${duration}s`}
         begin="0s"
         fill="freeze"
         calcMode="spline"
-        keySplines="0.16 1 0.3 1"
+        keySplines="0.1 0 0.9 1"
         keyTimes="0;1"
       />
       <animate
         attributeName="opacity"
         from={1}
         to={0}
-        dur="0.35s"
-        begin="0.5s"
+        dur="0.5s"
+        begin={`${duration}s`}
         fill="freeze"
       />
     </path>
   )
 }
 
-function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived }) {
+function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived, transitionDuration }) {
   const isManual = char.type === 'manual'
   const color = isManual ? '#f97316' : '#22d3ee'
   const dotSize = isManual ? 10 : 8
@@ -68,12 +69,14 @@ function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived }) {
         display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3,
         cursor: 'pointer',
         zIndex: isManual ? 10 : 5,
+        transition: transitionDuration > 0
+          ? `left ${transitionDuration}s linear, top ${transitionDuration}s linear`
+          : 'none',
       }}
       onMouseEnter={onHover}
       onMouseLeave={() => onHover(null)}
       onClick={onClick}
     >
-      {/* Tooltip — shown on hover */}
       {isHovered && (
         <div
           className="animate-fade-in-up"
@@ -109,7 +112,6 @@ function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived }) {
         </div>
       )}
 
-      {/* Name chip */}
       <div style={{
         fontSize: 9, fontWeight: 700, fontFamily: 'monospace',
         padding: '2px 6px', borderRadius: 5,
@@ -122,7 +124,6 @@ function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived }) {
         {firstName}
       </div>
 
-      {/* Glowing dot + pulse ring */}
       <div style={{ position: 'relative', width: dotSize, height: dotSize, flexShrink: 0 }}>
         <div style={{
           position: 'absolute', inset: 0,
@@ -149,12 +150,69 @@ function CharacterPin({ char, loc, isHovered, onHover, onClick, arrived }) {
 
 export default function MapPanel({ world, characters, mapConfig, transitionPhase, prevCharacters, onSelectCharacter }) {
   const [hoveredPin, setHoveredPin] = useState(null)
+  // Explicit position overrides: when set, pins render at old positions.
+  // When cleared (null), pins snap to current character locations → CSS transition fires.
+  const [positionOverrides, setPositionOverrides] = useState(null)
+  const prevCharsRef = useRef(null) // track character changes
 
   if (!mapConfig) {
     return (
       <div className="absolute inset-0" style={{ background: '#12112a', borderRadius: 'var(--radius-card)' }} />
     )
   }
+
+  // Build set of character IDs that moved this tick
+  const movedIds = new Set(
+    (prevCharacters ?? [])
+      .filter(pc => {
+        const cc = characters.find(c => c.id === pc.id)
+        return cc && pc.current_location !== cc.current_location
+      })
+      .map(pc => pc.id)
+  )
+
+  // Compute movement data for each moved character
+  const moveData = {}
+  movedIds.forEach(id => {
+    const prevChar = (prevCharacters ?? []).find(pc => pc.id === id)
+    const currChar = characters.find(c => c.id === id)
+    if (!prevChar || !currChar) return
+    const oldLoc = world?.locations?.find(l => l.id === prevChar.current_location)
+    const newLoc = world?.locations?.find(l => l.id === currChar.current_location)
+    if (!oldLoc || !newLoc) return
+    const dist = Math.sqrt((newLoc.x - oldLoc.x) ** 2 + (newLoc.y - oldLoc.y) ** 2)
+    const duration = Math.min(MAX_MOVE_DURATION, dist / MOVE_SPEED)
+    moveData[id] = { oldLoc, newLoc, dist, duration }
+  })
+
+  // Two-frame animation trigger: set pins to old positions, then clear after 2 frames
+  // so CSS transition fires as pins slide to new positions.
+  const animTriggeredRef = useRef(false)
+
+  useEffect(() => {
+    if (transitionPhase === 'idle') {
+      setPositionOverrides(null)
+      animTriggeredRef.current = false
+      return
+    }
+
+    if (transitionPhase !== 'moving' || movedIds.size === 0 || animTriggeredRef.current) return
+    animTriggeredRef.current = true
+
+    // Set pins to old positions first
+    const oldPos = {}
+    Object.entries(moveData).forEach(([id, data]) => {
+      oldPos[id] = { x: data.oldLoc.x, y: data.oldLoc.y, name: data.oldLoc.name }
+    })
+    setPositionOverrides(oldPos)
+
+    // After 2 frames, clear overrides → pins slide to new positions via CSS transition
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        setPositionOverrides(null)
+      })
+    })
+  }, [transitionPhase, characters])
 
   return (
     <div className="absolute inset-0" style={{ background: '#12112a', borderRadius: 'var(--radius-card)' }}>
@@ -179,67 +237,54 @@ export default function MapPanel({ world, characters, mapConfig, transitionPhase
         style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Tick transition trails — rendered during moving and settling phases */}
-        {transitionPhase !== 'idle' && (prevCharacters ?? []).map(prevChar => {
-          const currChar = characters.find(c => c.id === prevChar.id)
-          if (!currChar) return null
-          if (prevChar.current_location === currChar.current_location) return null
-
-          const oldLoc = world?.locations?.find(l => l.id === prevChar.current_location)
-          const newLoc = world?.locations?.find(l => l.id === currChar.current_location)
-          if (!oldLoc || !newLoc) return null
-
+        {transitionPhase !== 'idle' && !positionOverrides && Object.entries(moveData).map(([id, data]) => {
+          const char = (prevCharacters ?? []).find(pc => pc.id === id) ?? characters.find(c => c.id === id)
+          if (!char) return null
           return (
             <TrailPath
-              key={`trail-${prevChar.id}`}
-              char={prevChar}
-              oldLoc={oldLoc}
-              newLoc={newLoc}
+              key={`trail-${id}`}
+              char={char}
+              oldLoc={data.oldLoc}
+              newLoc={data.newLoc}
+              duration={data.duration}
             />
           )
         })}
       </svg>
 
       {/* ── Layer 3: Character pins ── */}
-      {(() => {
-        // Build set of character IDs that moved this tick
-        const movedIds = new Set(
-          (prevCharacters ?? [])
-            .filter(pc => {
-              const cc = characters.find(c => c.id === pc.id)
-              return cc && pc.current_location !== cc.current_location
-            })
-            .map(pc => pc.id)
+      {characters.map(char => {
+        const loc = world?.locations?.find(l => l.id === char.current_location)
+        if (!loc) return null
+
+        const sameLocation = characters.filter(c => c.current_location === char.current_location)
+        const idx = sameLocation.indexOf(char)
+        const clusterOffset = sameLocation.length > 1 ? (idx - (sameLocation.length - 1) / 2) * 14 : 0
+        const adjustedLoc = { ...loc, x: loc.x + (clusterOffset / 600) * 100 }
+
+        const moved = movedIds.has(char.id)
+        const duration = moveData[char.id]?.duration ?? 0
+
+        // During the override frame, moved pins are at their old position
+        const override = positionOverrides?.[char.id]
+        const pinLoc = override ?? adjustedLoc
+
+        // Transition is set when override is cleared (pins sliding to new position)
+        const isSliding = transitionPhase === 'moving' && moved && !positionOverrides
+
+        return (
+          <CharacterPin
+            key={char.id}
+            char={char}
+            loc={pinLoc}
+            isHovered={hoveredPin === char.id}
+            onHover={(val) => val ? setHoveredPin(char.id) : setHoveredPin(null)}
+            onClick={() => onSelectCharacter(char.id)}
+            arrived={transitionPhase === 'settling' && moved}
+            transitionDuration={isSliding ? duration : 0}
+          />
         )
-
-        // Group characters by location to handle clustering
-        const byLocation = {}
-        characters.forEach(char => {
-          const loc = world?.locations?.find(l => l.id === char.current_location)
-          if (!loc) return
-          if (!byLocation[char.current_location]) byLocation[char.current_location] = { loc, chars: [] }
-          byLocation[char.current_location].chars.push(char)
-        })
-
-        return Object.values(byLocation).flatMap(({ loc, chars }) =>
-          chars.map((char, idx) => {
-            const clusterOffset = chars.length > 1 ? (idx - (chars.length - 1) / 2) * 14 : 0
-            const adjustedLoc = { ...loc, x: loc.x + (clusterOffset / 600) * 100 }
-
-            return (
-              <CharacterPin
-                key={char.id}
-                char={char}
-                loc={adjustedLoc}
-                isHovered={hoveredPin === char.id}
-                onHover={(e) => e ? setHoveredPin(char.id) : setHoveredPin(null)}
-                onClick={() => onSelectCharacter(char.id)}
-                arrived={transitionPhase === 'settling' && movedIds.has(char.id)}
-              />
-            )
-          })
-        )
-      })()}
+      })}
 
       {/* Active count chip */}
       <div className="absolute top-4 right-4 z-10 pointer-events-none">
