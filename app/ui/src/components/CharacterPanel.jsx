@@ -59,6 +59,7 @@ export default function CharacterPanel({ characters, world, selectedCharacter, o
 
 /* ── Character List View (no selection) ── */
 function CharacterListView({ manual, npcs, locationName, selectedCharacter, onSelectCharacter }) {
+  const [diaryHovered, setDiaryHovered] = useState(false)
   return (
     <div className="flex-1 overflow-y-auto card-scroll space-y-4 animate-fade-in-up">
       {/* YOUR CHARACTERS section */}
@@ -97,27 +98,30 @@ function CharacterListView({ manual, npcs, locationName, selectedCharacter, onSe
             </div>
           ))}
 
-          {/* Diary — hero content, show generously */}
+          {/* Diary — hero content, expands on hover */}
           {manual[0]?.diary_entry && (
             <div
-              className="mt-2 px-4 py-3 rounded-xl cursor-pointer transition-all"
+              className="mt-2 px-4 py-3 rounded-xl transition-all"
               style={{
                 background: 'linear-gradient(135deg, rgba(249,115,22,0.04) 0%, rgba(249,115,22,0.01) 100%)',
                 borderLeft: '3px solid rgba(249,115,22,0.3)',
                 border: '1px solid rgba(249,115,22,0.08)',
                 borderLeftWidth: 3,
-                borderLeftColor: 'rgba(249,115,22,0.3)',
+                borderLeftColor: diaryHovered ? '#f97316' : 'rgba(249,115,22,0.3)',
               }}
-              onClick={() => onSelectCharacter(manual[0].id)}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.2)'; e.currentTarget.style.borderLeftColor = '#f97316' }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(249,115,22,0.08)'; e.currentTarget.style.borderLeftColor = 'rgba(249,115,22,0.3)' }}
+              onMouseEnter={() => setDiaryHovered(true)}
+              onMouseLeave={() => setDiaryHovered(false)}
             >
-              <p className="text-[12.5px] leading-[1.8] italic" style={{ color: '#c8d4de', fontFamily: 'Georgia, "Times New Roman", serif', display: '-webkit-box', WebkitLineClamp: 9, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              <p className="text-[12.5px] leading-[1.8] italic" style={{
+                color: '#c8d4de',
+                fontFamily: 'Georgia, "Times New Roman", serif',
+                ...(diaryHovered
+                  ? {}
+                  : { display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden' }),
+                transition: 'all 0.4s ease',
+              }}>
                 {manual[0].diary_entry}
               </p>
-              <span className="text-[9px] font-mono uppercase tracking-widest block mt-2" style={{ color: 'rgba(249,115,22,0.5)', letterSpacing: '0.1em' }}>
-                read more →
-              </span>
             </div>
           )}
         </div>
